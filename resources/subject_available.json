@@ -1,0 +1,37 @@
+{
+  "available_subjects": [
+    "ITT303",
+    "ITS202",
+    "SOC3",
+    "ITS304",
+    "ITS403",
+    "VED2",
+    "ITT303",
+    "ITT402",
+    "ITS402",
+    "LIT2",
+    "ITS202",
+    "ITS202",
+    "ITS406",
+    "ITT407"
+  ],
+  "open_semester": "second",
+  "available_subjects_bk": [
+    "ITT303",
+    "ITS202",
+    "SOC3",
+    "ITS304",
+    "ITS403",
+    "VED2",
+    "ITT303",
+    "ITT402",
+    "ITS402",
+    "LIT2",
+    "ITS202",
+    "ITS202",
+    "ITS406",
+    "ITT407",
+    "ITT403"
+  ],
+  "open_semester_bk": "second"
+}

@@ -1,0 +1,282 @@
+{
+  "curriculum": {
+    "BSCS": {
+      "201314": {
+        "subjects": [
+          {
+            "code": "ITS310",
+            "title": "Object Oriented Programming",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "ITT320",
+            "title": "PROGRAMMING 2",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          }
+        ]
+      },
+      "201617": {
+        "subjects": [
+          {
+            "code": "FIL12",
+            "title": "Pagbasa at Pagsusulat Tungo sa Pananaliksik",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "CCP12",
+            "title": "Programming 1",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "ENG12",
+            "title": "Technical Writing for IT",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "MAT12",
+            "title": "Trigonometry",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "PED12",
+            "title": "Rythmic Activities & Folk Dancing",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "NSTP12",
+            "title": "National Service Training Program 2",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "HIS12",
+            "title": "Philippine History",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "NAS12",
+            "title": "Biological Science",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "WTS12",
+            "title": "Web Technologies 1",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "ITC12",
+            "title": "Computer Software Application",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "HUM22",
+            "title": "Arts of Appreciation",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "SOC 3",
+            "title": "Basic Economics (w/ Taxation & Agrarian Reform)",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "CCP222",
+            "title": "Data Structures and Algorithms",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "IM221",
+            "title": "Information Management",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "HUM2",
+            "title": "Philosophy of Man",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "LIT22",
+            "title": "World Literature",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "CCO22",
+            "title": "Object - Oriented Programming",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "RIZ22",
+            "title": "Rizal's Life, Works, & Writings",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "PE 4",
+            "title": "Team Sports",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITS 307",
+            "title": "Computer Org. Architecture w/ ASM",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS 309",
+            "title": "Software Engineering",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS 304",
+            "title": "Automata & Language Theory",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS 306",
+            "title": "Principles of Data Communication and Networking",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "LIT 1",
+            "title": "Asian / Philippine Literature",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS 305",
+            "title": "Mathematical Statistics for I.T.",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS 308",
+            "title": "Free Elective II - Advance Algorithm",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITT 402",
+            "title": "Code of Ethics for I.T. Professionals",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "ITS 406",
+            "title": "Artificial Intelligence",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "VED202",
+            "title": "Family Life & Values System w/ FC",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "ITS 405",
+            "title": "I.T. Research Project 2",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "ITT 407",
+            "title": "I.T. Issues & Seminars",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "fourth",
+            "semester": "second"
+          }
+        ]
+      }
+    },
+    "BSIT": {
+    },
+    "ACT": {
+    }
+  }
+}

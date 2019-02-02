@@ -1,0 +1,1074 @@
+{
+  "curriculum": {
+    "BSCS": {
+      "201314": {
+        "subjects": [
+          {
+            "code": "ENG1",
+            "title": "Study and Thinking Skills",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "FIL1",
+            "title": "Komunikasyon sa Akademikong Filipino",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "MATH1",
+            "title": "Modern College Algebra",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "CC102",
+            "title": "Computer Programming 1",
+            "total_units": "2",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "PSY1",
+            "title": "General Psychology",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "CC101",
+            "title": "Introduction to Computing",
+            "total_units": "2",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "HUM1",
+            "title": "Art of Appreciation",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "PE1",
+            "title": "Physical Fitness/Gymnastics",
+            "total_units": "2",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "NSTP1",
+            "title": "National Service Training Program 1",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "ENGLISH+",
+            "title": "Grammar and Reading",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "ENG2",
+            "title": "Writing in the Discipline",
+            "total_units": "3",
+            "pre_req": "ENG1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "FIL2",
+            "title": "Pagbasa at Pagsulat Tungo sa Pananaliksik",
+            "total_units": "3",
+            "pre_req": "FIL1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "MATH2",
+            "title": "Trigonometry with Analytic Geometry",
+            "total_units": "3",
+            "pre_req": "MATH1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "NAS1",
+            "title": "Earth Science & Ecology",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "HUM2",
+            "title": "Philosophy of Man",
+            "total_units": "3",
+            "pre_req": "HUM1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "ICT2",
+            "title": "Computer Software Application",
+            "total_units": "2",
+            "pre_req": "CC101",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "ITS102",
+            "title": "Fundamentals of Problem Solving & Progg 2",
+            "total_units": "2",
+            "pre_req": "CC102",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "PE2",
+            "title": "Rythmic Activities/Dance",
+            "total_units": "2",
+            "pre_req": "PE1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "NSTP2",
+            "title": "National Service Training Program 2",
+            "total_units": "3",
+            "pre_req": "NSTP1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "ENG3",
+            "title": "Speech and Oral Communication",
+            "total_units": "3",
+            "pre_req": "ENG2",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "SOC1",
+            "title": "Philippine History (w/ Kasaysayan ng Muntinlupa)",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "ICT3",
+            "title": "Introduction to I.T & Internet w/HTML",
+            "total_units": "2",
+            "pre_req": "ICT2",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "NAS2",
+            "title": "Biological Science",
+            "total_units": "3",
+            "pre_req": "NAS1",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "ITE201",
+            "title": "Data Structure & Algorithms",
+            "total_units": "2",
+            "pre_req": "ITS102",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "ITT201",
+            "title": "Principles of file Organization",
+            "total_units": "2",
+            "pre_req": "ITS102",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "ACCTNG401",
+            "title": "Principles of Accounting",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "INS1",
+            "title": "Local Governance",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "PE3",
+            "title": "Fundamentals of Games & Sports",
+            "total_units": "2",
+            "pre_req": "PE2",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITT202",
+            "title": "PC Troubleshooting",
+            "total_units": "2",
+            "pre_req": "CC101",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITS204",
+            "title": "Digital Design",
+            "total_units": "3",
+            "pre_req": "ITS102",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "SOC4",
+            "title": "Basic Economics (w/ Taxation & Agrarian Reform)",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITM202",
+            "title": "Relational Database Management System",
+            "total_units": "2",
+            "pre_req": "ITT201",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITS203",
+            "title": "Principles of Programming Languages",
+            "total_units": "2",
+            "pre_req": "ITS102",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITS205",
+            "title": "Introduction to Calculus",
+            "total_units": "3",
+            "pre_req": "MATH1,MATH2",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "VED201",
+            "title": "Personhood Development",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "INS2",
+            "title": "Entrepreneurship",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "PE4",
+            "title": "Team Sports",
+            "total_units": "2",
+            "pre_req": "PE2",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITT301",
+            "title": "Technical Writing for IT",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "RIZ1",
+            "title": "Rizal's Life, Works & Writing",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITS301",
+            "title": "Descrete Mathematical Structure",
+            "total_units": "3",
+            "pre_req": "ITS204",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITS302",
+            "title": "Fundamentals of Electromagnetism",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITS303",
+            "title": "System Analysis & Design",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITT302",
+            "title": "Management Information System",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITT303",
+            "title": "Open Source Programming",
+            "total_units": "2",
+            "pre_req": "ICT3,ITS204",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITT304",
+            "title": "Free Elective I",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "LIT1",
+            "title": "Asian/Philippine Literature",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITT305",
+            "title": "Automata & Language Theory",
+            "total_units": "3",
+            "pre_req": "ITS301",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS305",
+            "title": "Mathematical Statistics for IT",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS310",
+            "title": "Object Oriented Programming",
+            "total_units": "2",
+            "pre_req": "ITT303,ITM202",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS306",
+            "title": "Principles of Data Communication & Networking",
+            "total_units": "3",
+            "pre_req": "ITT202",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS307",
+            "title": "Computer Org. Architecture w/ Assembly Lang.",
+            "total_units": "2",
+            "pre_req": "ITS202",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS308",
+            "title": "Free Elective II",
+            "total_units": "3",
+            "pre_req": "ITS202",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS309",
+            "title": "Software Engineering",
+            "total_units": "2",
+            "pre_req": "ITM202,ITS303",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "OJT",
+            "title": "On the job Training",
+            "total_units": "6",
+            "pre_req": "ITS202",
+            "year": "third",
+            "semester": "summer"
+          },
+          {
+            "code": "ITS403",
+            "title": "I.T Research Project w/ Methods of Research",
+            "total_units": "3",
+            "pre_req": "fourth",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "SOC3",
+            "title": "Society Culture w/ Family Planning",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITS402",
+            "title": "System Project Management",
+            "total_units": "3",
+            "pre_req": "ITS303,ITS309",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITT401",
+            "title": "Principles of Compiler Design",
+            "total_units": "3",
+            "pre_req": "ITS304",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITT402",
+            "title": "Principles of Operating Systems",
+            "total_units": "3",
+            "pre_req": "ITS203",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITS401",
+            "title": "Free Elective 3",
+            "total_units": "3",
+            "pre_req": "ITS308",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITS405",
+            "title": "I.T Research Project 2",
+            "total_units": "3",
+            "pre_req": "ITS403",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "VED2",
+            "title": "Family Life & Values System w/ C",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "LIT2",
+            "title": "World Literature",
+            "total_units": "3",
+            "pre_req": "LIT1",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "ITS406",
+            "title": "Artificial Intelligence",
+            "total_units": "3",
+            "pre_req": "fourth",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "ITT407",
+            "title": "I.T Issues & Seminars",
+            "total_units": "3",
+            "pre_req": "fourth",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "ITT403",
+            "title": "Code of Ethics for I.T Professionals",
+            "total_units": "3",
+            "pre_req": "fourth",
+            "year": "fourth",
+            "semester": "second"
+          }
+        ]
+      },
+      "201617": {
+        "subjects": [
+          {
+            "code": "ENG1",
+            "title": "Study and Thinking Skills",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "FIL1",
+            "title": "Komunikasyon sa Akademikong Filipino",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "MATH1",
+            "title": "Modern College Algebra",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "CC102",
+            "title": "Computer Programming 1",
+            "total_units": "2",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "PSY1",
+            "title": "General Psychology",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "CC101",
+            "title": "Introduction to Computing",
+            "total_units": "2",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "HUM1",
+            "title": "Art of Appreciation",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "PE1",
+            "title": "Physical Fitness/Gymnastics",
+            "total_units": "2",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "NSTP1",
+            "title": "National Service Training Program 1",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "ENGLISH+",
+            "title": "Grammar and Reading",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "first"
+          },
+          {
+            "code": "ENG2",
+            "title": "Writing in the Discipline",
+            "total_units": "3",
+            "pre_req": "ENG1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "FIL2",
+            "title": "Pagbasa at Pagsulat Tungo sa Pananaliksik",
+            "total_units": "3",
+            "pre_req": "FIL1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "MATH2",
+            "title": "Trigonometry with Analytic Geometry",
+            "total_units": "3",
+            "pre_req": "MATH1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "NAS1",
+            "title": "Earth Science & Ecology",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "HUM2",
+            "title": "Philosophy of Man",
+            "total_units": "3",
+            "pre_req": "HUM1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "ICT2",
+            "title": "Computer Software Application",
+            "total_units": "2",
+            "pre_req": "CC101",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "ITS102",
+            "title": "Fundamentals of Problem Solving & Progg 2",
+            "total_units": "2",
+            "pre_req": "CC102",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "PE2",
+            "title": "Rythmic Activities/Dance",
+            "total_units": "2",
+            "pre_req": "PE1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "NSTP2",
+            "title": "National Service Training Program 2",
+            "total_units": "3",
+            "pre_req": "NSTP1",
+            "year": "first",
+            "semester": "second"
+          },
+          {
+            "code": "ENG3",
+            "title": "Speech and Oral Communication",
+            "total_units": "3",
+            "pre_req": "ENG2",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "SOC1",
+            "title": "Philippine History (w/ Kasaysayan ng Muntinlupa)",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "ICT3",
+            "title": "Introduction to I.T & Internet w/HTML",
+            "total_units": "2",
+            "pre_req": "ICT2",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "NAS2",
+            "title": "Biological Science",
+            "total_units": "3",
+            "pre_req": "NAS1",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "ITE201",
+            "title": "Data Structure & Algorithms",
+            "total_units": "2",
+            "pre_req": "ITS102",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "ITT201",
+            "title": "Principles of file Organization",
+            "total_units": "2",
+            "pre_req": "ITS102",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "ACCTNG401",
+            "title": "Principles of Accounting",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "INS1",
+            "title": "Local Governance",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "first"
+          },
+          {
+            "code": "PE3",
+            "title": "Fundamentals of Games & Sports",
+            "total_units": "2",
+            "pre_req": "PE2",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITT202",
+            "title": "PC Troubleshooting",
+            "total_units": "2",
+            "pre_req": "CC101",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITS204",
+            "title": "Digital Design",
+            "total_units": "3",
+            "pre_req": "ITS102",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "SOC4",
+            "title": "Basic Economics (w/ Taxation & Agrarian Reform)",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITM202",
+            "title": "Relational Database Management System",
+            "total_units": "2",
+            "pre_req": "ITT201",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITS203",
+            "title": "Principles of Programming Languages",
+            "total_units": "2",
+            "pre_req": "ITS102",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITS205",
+            "title": "Introduction to Calculus",
+            "total_units": "3",
+            "pre_req": "MATH1,MATH2",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "VED201",
+            "title": "Personhood Development",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "INS2",
+            "title": "Entrepreneurship",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "PE4",
+            "title": "Team Sports",
+            "total_units": "2",
+            "pre_req": "PE2",
+            "year": "second",
+            "semester": "second"
+          },
+          {
+            "code": "ITT301",
+            "title": "Technical Writing for IT",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "RIZ1",
+            "title": "Rizal's Life, Works & Writing",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITS301",
+            "title": "Descrete Mathematical Structure",
+            "total_units": "3",
+            "pre_req": "ITS204",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITS302",
+            "title": "Fundamentals of Electromagnetism",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITS303",
+            "title": "System Analysis & Design",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITT302",
+            "title": "Management Information System",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITT303",
+            "title": "Open Source Programming",
+            "total_units": "2",
+            "pre_req": "ICT3,ITS204",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "ITT304",
+            "title": "Free Elective I",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "first"
+          },
+          {
+            "code": "LIT1",
+            "title": "Asian/Philippine Literature",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITT305",
+            "title": "Automata & Language Theory",
+            "total_units": "3",
+            "pre_req": "ITS301",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS305",
+            "title": "Mathematical Statistics for IT",
+            "total_units": "3",
+            "pre_req": "third",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS310",
+            "title": "Object Oriented Programming",
+            "total_units": "2",
+            "pre_req": "ITT303,ITM202",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS306",
+            "title": "Principles of Data Communication & Networking",
+            "total_units": "3",
+            "pre_req": "ITT202",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS307",
+            "title": "Computer Org. Architecture w/ Assembly Lang.",
+            "total_units": "2",
+            "pre_req": "ITS202",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS308",
+            "title": "Free Elective II",
+            "total_units": "3",
+            "pre_req": "ITS202",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "ITS309",
+            "title": "Software Engineering",
+            "total_units": "2",
+            "pre_req": "ITM202,ITS303",
+            "year": "third",
+            "semester": "second"
+          },
+          {
+            "code": "OJT",
+            "title": "On the job Training",
+            "total_units": "6",
+            "pre_req": "ITS202",
+            "year": "third",
+            "semester": "summer"
+          },
+          {
+            "code": "ITS403",
+            "title": "I.T Research Project w/ Methods of Research",
+            "total_units": "3",
+            "pre_req": "fourth",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "SOC3",
+            "title": "Society Culture w/ Family Planning",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITS402",
+            "title": "System Project Management",
+            "total_units": "3",
+            "pre_req": "ITS303,ITS309",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITT401",
+            "title": "Principles of Compiler Design",
+            "total_units": "3",
+            "pre_req": "ITS304",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITT402",
+            "title": "Principles of Operating Systems",
+            "total_units": "3",
+            "pre_req": "ITS203",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITS401",
+            "title": "Free Elective 3",
+            "total_units": "3",
+            "pre_req": "ITS308",
+            "year": "fourth",
+            "semester": "first"
+          },
+          {
+            "code": "ITS405",
+            "title": "I.T Research Project 2",
+            "total_units": "3",
+            "pre_req": "ITS403",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "VED2",
+            "title": "Family Life & Values System w/ C",
+            "total_units": "3",
+            "pre_req": "",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "LIT2",
+            "title": "World Literature",
+            "total_units": "3",
+            "pre_req": "LIT1",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "ITS406",
+            "title": "Artificial Intelligence",
+            "total_units": "3",
+            "pre_req": "fourth",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "ITT407",
+            "title": "I.T Issues & Seminars",
+            "total_units": "3",
+            "pre_req": "fourth",
+            "year": "fourth",
+            "semester": "second"
+          },
+          {
+            "code": "ITT403",
+            "title": "Code of Ethics for I.T Professionals",
+            "total_units": "3",
+            "pre_req": "fourth",
+            "year": "fourth",
+            "semester": "second"
+          }
+        ]
+      }
+    },
+    "BSIT": {
+    },
+    "ACT": {
+    }
+  }
+}

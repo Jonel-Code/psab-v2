@@ -1,0 +1,330 @@
+{
+  "student_info": {
+    "name": "jonel pante",
+    "id": "16118081",
+    "course": "BSCS",
+    "year": "fourth"
+  },
+  "subjects_taken": [
+    {
+      "code": "ENG1",
+      "title": "Study and Thinking Skills",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "FIL1",
+      "title": "Komunikasyon sa Akademikong Filipino",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "MATH1",
+      "title": "Modern College Algebra",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "CC102",
+      "title": "Computer Programming 1",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "PSY1",
+      "title": "General Psychology",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "CC101",
+      "title": "Introduction to Computing",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "HUM1",
+      "title": "Art of Appreciation",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "PE1",
+      "title": "Physical Fitness/Gymnastics",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "NSTP1",
+      "title": "National Service Training Program 1",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ENGLISH+",
+      "title": "Grammar and Reading",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ENG2",
+      "title": "Writing in the Discipline",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "FIL2",
+      "title": "Pagbasa at Pagsulat Tungo sa Pananaliksik",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "MATH2",
+      "title": "Trigonometry with Analytic Geometry",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "NAS1",
+      "title": "Earth Science & Ecology",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "HUM2",
+      "title": "Philosophy of Man",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ICT2",
+      "title": "Computer Software Application",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS102",
+      "title": "Fundamentals of Problem Solving & Progg 2",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "PE2",
+      "title": "Rythmic Activities/Dance",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "NSTP2",
+      "title": "National Service Training Program 2",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ENG3",
+      "title": "Speech and Oral Communication",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "SOC1",
+      "title": "Philippine History (w/ Kasaysayan ng Muntinlupa)",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ICT3",
+      "title": "Introduction to I.T & Internet w/HTML",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "NAS2",
+      "title": "Biological Science",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITE201",
+      "title": "Data Structure & Algorithms",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITT201",
+      "title": "Principles of file Organization",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "ACCTNG401",
+      "title": "Principles of Accounting",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "INS1",
+      "title": "Local Governance",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "PE3",
+      "title": "Fundamentals of Games & Sports",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITT202",
+      "title": "PC Troubleshooting",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS204",
+      "title": "Digital Design",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "SOC4",
+      "title": "Basic Economics (w/ Taxation & Agrarian Reform)",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITM202",
+      "title": "Relational Database Management System",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS203",
+      "title": "Principles of Programming Languages",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS204",
+      "title": "Introduction to Calculus",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "VED201",
+      "title": "Personhood Development",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "INS2",
+      "title": "Entrepreneurship",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "PE4",
+      "title": "Team Sports",
+      "total_units": "2",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITT301",
+      "title": "Technical Writing for IT",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "RIZ1",
+      "title": "Rizal's Life, Works & Writing",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS301",
+      "title": "Descrete Mathematical Structure",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS302",
+      "title": "Fundamentals of Electromagnetism",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS303",
+      "title": "System Analysis & Design",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITT302",
+      "title": "Management Information System",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITT304",
+      "title": "Free Elective I",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "LIT1",
+      "title": "Asian/Philippine Literature",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITT304",
+      "title": "Automata & Language Theory",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS305",
+      "title": "Mathematical Statistics for IT",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS310",
+      "title": "Object Oriented Programming",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS306",
+      "title": "Principles of Data Communication & Networking",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS307",
+      "title": "Computer Org. Architecture w/ Assembly Lang.",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "ITS309",
+      "title": "Software Engineering",
+      "total_units": "3",
+      "grade": "1.2"
+    },
+    {
+      "code": "OJT",
+      "title": "On the job Training",
+      "total_units": "6",
+      "grade": "1.2"
+    }
+  ],
+  "subjects_taken_bk": [
+    {
+      "code": "cc101",
+      "title": "intro to computing",
+      "total_units": "3",
+      "grade": "1.2"
+    }
+  ]
+}
