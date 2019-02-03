@@ -65,10 +65,11 @@ class FacultyAccountCreate(Resource):
         username = data['faculty_id']
         password = data['password']
         department = data['department']
+        a_type = data['account_type']
+
         a_t = AccountType.Common
-        print('a_t', a_t)
-        if data['account_type'] is not None:
-            a_t = AccountType(data['account_type'])
+        if a_type is not None and AccountType.is_account_type_valid(a_type):
+            a_t = AccountType(a_type)
 
         f_data: FacultyAccounts = create_faculty_user(username, password, department, a_t)
         ret_v = None

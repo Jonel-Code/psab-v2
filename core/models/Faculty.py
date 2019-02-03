@@ -10,6 +10,10 @@ class AccountType(enum.Enum):
     Admin = 'Admin'
     Common = 'Common'
 
+    @staticmethod
+    def is_account_type_valid(s: str) -> bool:
+        return s in [x.value for x in AccountType]
+
 
 class FacultyAccounts(db.Model, SavableModel):
     __tablename__ = 'facultyAccounts'
