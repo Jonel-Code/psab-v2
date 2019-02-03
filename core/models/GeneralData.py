@@ -20,9 +20,13 @@ class Course(db.Model, SavableModel):
     __tablename__ = 'course'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(30))
+    title = db.Column(db.String(30), unique=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
 
     def __init__(self, title: str, department: Department):
         self.title = title.lower()
         self.department_id = department.id
+
+    @staticmethod
+    def find_course_title(t: str):
+        return Course.query.filter_by(title=t).first()

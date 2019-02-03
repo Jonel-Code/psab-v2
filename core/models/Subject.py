@@ -1,9 +1,10 @@
 from deploy import db
 from core.models.CurriculumEnums import YearEnum, SemesterEnum
 from core.models.GeneralData import Course, Department
+from core.models.Extension import SavableModel
 
 
-class Subject(db.Model):
+class Subject(db.Model, SavableModel):
     __tablename__ = 'subject'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -34,7 +35,7 @@ class Subject(db.Model):
         return self.pre_req.split(self._pre_req_separator)
 
 
-class Curriculum(db.Model):
+class Curriculum(db.Model, SavableModel):
     __tablename__ = 'curriculum'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -61,6 +62,28 @@ class Curriculum(db.Model):
             if i.code == subject_code:
                 x = i
         return x
+
+    @staticmethod
+    def search_curriculum(id_value: int):
+        return Curriculum.query.filter_by(id=id_value).first()
+
+    @property
+    def subject_list_to_json(self):
+        return [{'subject_code': s.code, 'pre_req': s.pre_requisite_codes} for s in self.subject_list]
+
+    @property
+    def course(self) -> Course:
+        return Course.query.filter_by(id=self.course_id).first()
+
+    @property
+    def to_json(self):
+        return {
+            'curriculum_id': self.id,
+            'year': self.year,
+            'description': self.description,
+            'course': self.course.title,
+            'subjects': self.subject_list_to_json
+        }
 
 
 class CurriculumSubjects(db.Model):

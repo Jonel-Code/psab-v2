@@ -7,6 +7,7 @@ class SavableModel:
         try:
             db.session.add(self)
             db.session.commit()
+            db.session.close()
             return self
         except exc.IntegrityError:
             return None
