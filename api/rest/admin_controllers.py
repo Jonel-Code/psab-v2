@@ -47,11 +47,15 @@ class NewCurriculumData(Resource):
 
         y = data[year]
         desc = data[description]
-        c = data[course]
-        dept = data[department]
+        c = str(data[course]).lower()
+        dept = str(data[department]).lower()
 
         from core.models.Subject import Course, Department
         from core.models.Subject import Curriculum
+
+        checker = Curriculum.query.filter_by(year=y, description=desc).first()
+        if checker is not None:
+            return response_checker(None, {}, err_msg='Curriculum with same year and description detected', err_num=401)
 
         c_data: Curriculum = None
         e_msg = 'Server Error'
@@ -69,7 +73,7 @@ class NewCurriculumData(Resource):
         except Exception as e:
             e_msg = e
 
-        rv = None
+        rv = {}
         if c_data is not None:
             rv = {
                 'message': f'added New Curriculum {c_data.description} for year {c_data.year}',
