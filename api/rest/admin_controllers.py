@@ -80,3 +80,59 @@ class NewCurriculumData(Resource):
                 'curriculum_id': c_data.id
             }
         return response_checker(c_data, rv, err_msg=e_msg, err_num=500)
+
+
+class AddSubjectToCurriculum(Resource):
+    def post(self):
+        curriculum_id = 'curriculum_id'
+        code = 'code'
+        title = 'title'
+        pre_req = 'pre_req'
+        year = 'year'
+        semester = 'semester'
+        parser = quick_parse([
+            (curriculum_id, True),
+            (code, True),
+            (title, True),
+            (pre_req, False),
+            (year, True),
+            (semester, True),
+        ])
+        data = parser.parse_args()
+
+        c_id = data[curriculum_id]
+        _code = data[code]
+        _title = data[title]
+        _pre_req = str(data[pre_req]).split(',') if len(data[pre_req]) > 0 is not None else []
+        print('_pre_req', _pre_req)
+        print('len(_pre_req)', len(_pre_req))
+        print('data[pre_req]', data[pre_req])
+        _year = data[year]
+        _semester = data[semester]
+
+        from core.models.Subject import Curriculum, Subject
+        from core.models.CurriculumEnums import YearEnum, SemesterEnum
+        __year = YearEnum(_year)
+        __semester = SemesterEnum(_semester)
+        c: Curriculum = get_curriculum(c_id)
+
+        rv = None
+        if c is not None:
+            s: Subject = Subject.check_subject(
+                code=_code,
+                title=_title,
+                pre_req=_pre_req,
+                year=__year,
+                semester=__semester,
+                create_if_not_exist=True
+            )
+            ch = c.search_subject(s.code)
+            if ch is None:
+                c.add_a_subject(s)
+
+            rv = {
+                'subject_id': s.id,
+                'note': 'added new subject' if ch is None else 'Subject already in Curriculum'
+            }
+
+        return response_checker(c, rv, err_msg='Subject not added', err_num=500)

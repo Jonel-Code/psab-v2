@@ -3,7 +3,7 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
 from instance.config import app_config
-from api.rest import StudentLogin, AdminLogin, FacultyAccountCreate, NewCurriculumData, CurriculumData
+from api.rest import StudentLogin, AdminLogin, FacultyAccountCreate, NewCurriculumData, CurriculumData, AddSubjectToCurriculum
 
 
 def create_app(env_config):
@@ -26,6 +26,7 @@ api.add_resource(AdminLogin, '/admin-login')
 api.add_resource(FacultyAccountCreate, '/admin-create')
 api.add_resource(NewCurriculumData, '/new-curriculum')
 api.add_resource(CurriculumData, '/curriculum-data')
+api.add_resource(AddSubjectToCurriculum, '/curriculum/add-subject')
 
 if __name__ == '__main__':
     app.run()

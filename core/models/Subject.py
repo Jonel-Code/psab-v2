@@ -17,12 +17,15 @@ class Subject(db.Model, SavableModel):
     def __init__(self,
                  code: str,
                  title: str,
-                 pre_req: list(),
+                 pre_req: list,
                  year: YearEnum,
                  semester: SemesterEnum):
         self.code = code
         self.title = title
-        self.pre_req = self._pre_req_separator.join(pre_req)
+        if len(pre_req) > 0:
+            self.pre_req = self._pre_req_separator.join(pre_req)
+        else:
+            self.pre_req = ''
         self.year = year
         self.semester = semester
 
@@ -33,6 +36,34 @@ class Subject(db.Model, SavableModel):
     @property
     def pre_requisite_codes(self) -> [str]:
         return self.pre_req.split(self._pre_req_separator)
+
+    @staticmethod
+    def check_subject(code: str,
+                      title: str,
+                      pre_req: list,
+                      year: YearEnum,
+                      semester: SemesterEnum,
+                      create_if_not_exist=False):
+        sep = ','
+        pre_req = sep.join(pre_req) if len(pre_req) > 0 else ''
+        s: Subject = Subject.query.filter_by(
+            code=code,
+            title=title,
+            pre_req=pre_req,
+            year=year,
+            semester=semester
+        ).first()
+        if s is None and create_if_not_exist:
+            pre_req = pre_req.split(sep) if len(pre_req) > 0 else []
+            s = Subject(
+                code=code,
+                title=title,
+                pre_req=pre_req,
+                year=year,
+                semester=semester
+            )
+            s.save()
+        return s
 
 
 class Curriculum(db.Model, SavableModel):
@@ -54,7 +85,7 @@ class Curriculum(db.Model, SavableModel):
     @property
     def subject_list(self) -> [Subject]:
         subjects_cur: [CurriculumSubjects] = CurriculumSubjects.query.filter_by(curriculum_id=self.id).all()
-        return [Subject.query.filter_by(id=s.subject_id).first() for s in subjects_cur]
+        return [s.subject for s in subjects_cur]
 
     def search_subject(self, subject_code: str) -> Subject:
         x: Subject = None
@@ -63,13 +94,27 @@ class Curriculum(db.Model, SavableModel):
                 x = i
         return x
 
+    def add_a_subject(self, subj: Subject):
+        ns = CurriculumSubjects(curriculum=self, subject=subj)
+        ns.save()
+
+    def add_subjects(self, s_arr: [Subject]):
+        for a in s_arr:
+            self.add_a_subject(a)
+
+    def remove_a_subject(self, subj: Subject):
+        c_id = self.id
+        s_id = subj.id
+        CurriculumSubjects.query.filter_by(curriculum_id=c_id, subject_id=s_id).delete()
+        db.session.commit()
+
     @staticmethod
     def search_curriculum(id_value: int):
         return Curriculum.query.filter_by(id=id_value).first()
 
     @property
     def subject_list_to_json(self):
-        return [{'subject_code': s.code, 'pre_req': s.pre_requisite_codes} for s in self.subject_list]
+        return [{'subject_code': s.code, 'title': s.title, 'pre_req': s.pre_requisite_codes} for s in self.subject_list]
 
     @property
     def course(self) -> Course:
@@ -86,7 +131,7 @@ class Curriculum(db.Model, SavableModel):
         }
 
 
-class CurriculumSubjects(db.Model):
+class CurriculumSubjects(db.Model, SavableModel):
     __tablename__ = 'curriculumSubjects'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -96,6 +141,10 @@ class CurriculumSubjects(db.Model):
     def __init__(self, curriculum: Curriculum, subject: Subject):
         self.curriculum_id = curriculum.id
         self.subject_id = subject.id
+
+    @property
+    def subject(self) -> Subject:
+        return Subject.query.filter_by(id=self.subject_id).first()
 
 
 class AvailableSubjects(db.Model):
