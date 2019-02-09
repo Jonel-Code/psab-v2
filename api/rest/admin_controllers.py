@@ -104,9 +104,6 @@ class AddSubjectToCurriculum(Resource):
         _code = data[code]
         _title = data[title]
         _pre_req = str(data[pre_req]).split(',') if len(data[pre_req]) > 0 is not None else []
-        print('_pre_req', _pre_req)
-        print('len(_pre_req)', len(_pre_req))
-        print('data[pre_req]', data[pre_req])
         _year = data[year]
         _semester = data[semester]
 
@@ -136,3 +133,67 @@ class AddSubjectToCurriculum(Resource):
             }
 
         return response_checker(c, rv, err_msg='Subject not added', err_num=500)
+
+
+class StudentCurriculum(Resource):
+    def get(self):
+        req_params: list((str, bool)) = [
+            ('student_id', True),
+            ('course', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+
+        from core.models.StudentData import Course, nearest_curriculum
+        sid = int(data['student_id'])
+        c = Course.find_course_title(data['course'])
+        prefix = '20'
+        rv = {}
+        if c is not None:
+            cur = nearest_curriculum(str(sid), c.id, prefix)
+            rv = cur.subject_list_to_json
+            print(cur.subject_list_to_json)
+        return {'curriculum': rv}, 200
+
+
+class OpenSubject(Resource):
+    def get(self):
+        req_params: list((str, bool)) = [
+            ('year', True),
+            ('semester', True),
+            ('department', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        from core.models.GeneralData import Department
+        from core.models.CurriculumEnums import SemesterEnum
+        from core.models.Subject import AvailableSubjects
+        d = Department.search_dept(data['department'])
+        sem = SemesterEnum(data['semester'])
+        y = data['year']
+        subs = AvailableSubjects.available_subjects_for_year_sem(y, sem, d)
+        return {'available_subjects': subs}, 200
+
+    def post(self):
+        req_params: list((str, bool)) = [
+            ('department', True),
+            ('year', True),
+            ('semester', True),
+            ('subject_id', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        sid = int(data['subject_id'])
+
+        from core.models.Subject import Subject
+
+        s: Subject = Subject.query.filter_by(id=sid).first()
+        print('is s', s)
+        rv = 'error in server'
+        if s is not None:
+            from core.models.GeneralData import Department
+            from core.models.CurriculumEnums import SemesterEnum
+            d = Department.search_dept(data['department'])
+            sem = SemesterEnum(data['semester'])
+            year = data['year']
+            added = s.open_subject(sem, year, d)
+            if added:
+                rv = f'Opened Subject this {year} on {sem.value}'
+        return {'message': rv}, 200

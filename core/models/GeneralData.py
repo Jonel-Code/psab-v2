@@ -29,4 +29,4 @@ class Course(db.Model, SavableModel):
 
     @staticmethod
     def find_course_title(t: str):
-        return Course.query.filter_by(title=t).first()
+        return Course.query.filter_by(title=t.lower()).first()

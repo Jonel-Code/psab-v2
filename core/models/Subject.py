@@ -65,6 +65,25 @@ class Subject(db.Model, SavableModel):
             s.save()
         return s
 
+    def open_subject(self, sem: SemesterEnum, year: int, dept: Department):
+        try:
+            if not self.is_open_this_year_sem(sem, year, dept):
+                a = AvailableSubjects(year, sem, self, dept)
+                a.save()
+        except Exception as e:
+            print(e)
+            return False
+        return True
+
+    def is_open_this_year_sem(self, sem: SemesterEnum, year: int, dept: Department):
+        a = AvailableSubjects.query.filter_by(
+            sys_year=year,
+            semester=sem,
+            subject_id=self.id,
+            department_id=dept.id
+        ).first()
+        return a is not None
+
 
 class Curriculum(db.Model, SavableModel):
     __tablename__ = 'curriculum'
@@ -114,7 +133,8 @@ class Curriculum(db.Model, SavableModel):
 
     @property
     def subject_list_to_json(self):
-        return [{'subject_code': s.code, 'title': s.title, 'pre_req': s.pre_requisite_codes} for s in self.subject_list]
+        return [{'subject_id': s.id, 'subject_code': s.code, 'title': s.title, 'pre_req': s.pre_requisite_codes} for s
+                in self.subject_list]
 
     @property
     def course(self) -> Course:
@@ -147,7 +167,7 @@ class CurriculumSubjects(db.Model, SavableModel):
         return Subject.query.filter_by(id=self.subject_id).first()
 
 
-class AvailableSubjects(db.Model):
+class AvailableSubjects(db.Model, SavableModel):
     __tablename__ = 'availableSubjects'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -161,3 +181,16 @@ class AvailableSubjects(db.Model):
         self.semester = semester
         self.subject_id = subject.id
         self.department_id = department.id
+
+    @property
+    def subject(self):
+        return Subject.query.filter_by(id=self.subject_id).first()
+
+    @staticmethod
+    def available_subjects_for_year_sem(year: int, sem: SemesterEnum, dept: Department):
+        subj = AvailableSubjects.query.filter_by(
+            sys_year=year,
+            semester=sem,
+            department_id=dept.id
+        ).all()
+        return [x.subject.code for x in subj]

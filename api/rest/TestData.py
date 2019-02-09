@@ -2,6 +2,26 @@ from flask_restful import Resource
 from api.rest.quick_parser import quick_parse
 
 
+class TestCall(Resource):
+    def get(self):
+        req_params: list((str, bool)) = [
+            ('student_id', True),
+            ('course', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+
+        from core.models.StudentData import Course, nearest_curriculum
+        sid = int(data['student_id'])
+        c = Course.find_course_title(data['course'])
+        prefix = '20'
+        rv = {}
+        if c is not None:
+            cur = nearest_curriculum(str(sid), c.id, prefix)
+            rv = cur.subject_list_to_json
+            print(cur.subject_list_to_json)
+        return {'curriculum': rv}, 200
+
+
 class SendTest(Resource):
     def get(self):
         req_params: list((str, bool)) = [
