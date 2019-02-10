@@ -166,6 +166,15 @@ class CurriculumSubjects(db.Model, SavableModel):
     def subject(self) -> Subject:
         return Subject.query.filter_by(id=self.subject_id).first()
 
+    @staticmethod
+    def remove_curriculum_subject(cur_subj: any):
+        if cur_subj is CurriculumSubjects:
+            try:
+                CurriculumSubjects.query.filter_by(id=cur_subj.id).delete()
+            except Exception as e:
+                print('error:', e)
+        db.session.commit()
+
 
 class AvailableSubjects(db.Model, SavableModel):
     __tablename__ = 'availableSubjects'
@@ -194,3 +203,65 @@ class AvailableSubjects(db.Model, SavableModel):
             department_id=dept.id
         ).all()
         return [x.subject.code for x in subj]
+
+
+class SubjectClusters(db.Model, SavableModel):
+    __tablename__ = 'subjectClusters'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(90), unique=True)
+
+    def __init__(self, name: str):
+        self.name = name.lower()
+
+    @property
+    def subjects_under(self) -> [str]:
+        s = SubjectEquivalents.query.filter_by(cluster_id=self.id).all()
+        if len(s) == 0:
+            return []
+        return [x.subject_code for x in s]
+
+    @staticmethod
+    def search_cluster_name(n: str):
+        return SubjectClusters.query.filter_by(name=n.lower()).first()
+
+
+class SubjectEquivalents(db.Model, SavableModel):
+    __tablename__ = 'subjectEquivalents'
+
+    id = db.Column(db.Integer, primary_key=True)
+    cluster_id = db.Column(db.Integer, db.ForeignKey('subjectClusters.id'))
+    subject_code = db.Column(db.String(50))
+
+    def __init__(self, cluster: SubjectClusters, subject_code: str):
+        self.cluster_id = cluster.id
+        self.subject_id = subject_code
+
+    @property
+    def subject_cluster(self):
+        return SubjectClusters.query.filter_by(id=self.cluster_id).first()
+
+    @staticmethod
+    def search_subject_code(s_code: str) -> [str]:
+        s: [SubjectEquivalents] = SubjectEquivalents.query.filter_by(subject_code=s_code).all()
+        cid = []
+        subject_codes = []
+        if s is not None:
+            for x in s:
+                if x.cluster_id not in cid:
+                    cid.append(x.cluster_id)
+            for x in cid:
+                subjects: [SubjectEquivalents] = SubjectEquivalents.query.filter_by(cluster_id=x).all()
+                for z in subjects:
+                    if z.subject_code not in subject_codes:
+                        subject_codes.append(z.subject_code)
+        return subject_codes
+
+    @staticmethod
+    def subj_equiv_in_cur(s_code: str, curriculum: Curriculum) -> [str]:
+        c_subj = [x.code for x in curriculum.subject_list]
+        equiv_subj = SubjectEquivalents.search_subject_code(s_code)
+        res = []
+        for x in equiv_subj:
+            if x in c_subj and x not in res:
+                res.append(x)
+        return res

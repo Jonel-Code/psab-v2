@@ -152,7 +152,7 @@ class StudentCurriculum(Resource):
             cur = nearest_curriculum(str(sid), c.id, prefix)
             rv = cur.subject_list_to_json
             print(cur.subject_list_to_json)
-        return {'curriculum': rv}, 200
+        return {'curriculum': rv}, 200, {'Access-Control-Allow-Origin': '*'}
 
 
 class OpenSubject(Resource):
@@ -170,7 +170,7 @@ class OpenSubject(Resource):
         sem = SemesterEnum(data['semester'])
         y = data['year']
         subs = AvailableSubjects.available_subjects_for_year_sem(y, sem, d)
-        return {'available_subjects': subs}, 200
+        return {'available_subjects': subs}, 200, {'Access-Control-Allow-Origin': '*'}
 
     def post(self):
         req_params: list((str, bool)) = [
@@ -197,3 +197,62 @@ class OpenSubject(Resource):
             if added:
                 rv = f'Opened Subject this {year} on {sem.value}'
         return {'message': rv}, 200
+
+
+class NewSubjectCluster(Resource):
+    def get(self):
+        req_params: list((str, bool)) = [
+            ('name', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+
+        from core.models.Subject import SubjectClusters
+
+        s: SubjectClusters = SubjectClusters.search_cluster_name(data['name'])
+        if s is None:
+            return response_checker(None, None, 'not found', 404)
+        rv = {'found': s.subjects_under}
+        return response_checker(True, rv)
+
+    def post(self):
+        req_params: list((str, bool)) = [
+            ('name', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        name = data['name']
+
+        from core.models.Subject import SubjectClusters
+
+        s: SubjectClusters = SubjectClusters.search_cluster_name(name)
+        if s is not None:
+            return response_checker(None, None, 'duplicate subject cluster name', 404)
+        rv = {}
+
+        try:
+            ns = SubjectClusters(name=name)
+            ns.save()
+            rv = {
+                'message': f'successfully created subject cluster',
+                'id': ns.id,
+                'name': ns.name
+            }
+        except Exception as e:
+            rv = {'message': e}
+        return response_checker(True, rv, rv['message'], 500)
+
+
+class GetSubjectEquivalent(Resource):
+    def get(self):
+        req_params: list((str, bool)) = [
+            ('subject_code', True),
+            ('curriculum_id', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+
+        from core.models.Subject import SubjectEquivalents, Curriculum
+
+        cur = Curriculum.search_curriculum(int(data['curriculum_id']))
+        code = data['subject_code']
+        res = SubjectEquivalents.subj_equiv_in_cur(code, cur)
+        rv = {'result': res}
+        return response_checker(True, rv)
