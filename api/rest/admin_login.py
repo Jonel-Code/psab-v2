@@ -48,7 +48,7 @@ class AdminLogin(Resource):
                 }
             }
 
-        return response_checker(f_data, rv)
+        return response_checker(f_data, rv, err_msg='not found', err_num=200)
 
 
 class FacultyAccountCreate(Resource):
@@ -81,7 +81,7 @@ class FacultyAccountCreate(Resource):
                     'account_type': f_data.account_type.value
                 }
             }
-        return response_checker(f_data, ret_v, err_msg='Account_name already Exist', err_num=409)
+        return response_checker(f_data, ret_v, err_msg='Account_name already Exist', err_num=200)
 
 
 class DepartmentListing(Resource):
