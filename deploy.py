@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from instance.config import app_config
 from api.rest import StudentLogin, AdminLogin, FacultyAccountCreate, NewCurriculumData, CurriculumData, \
-    AddSubjectToCurriculum, StudentCurriculum, OpenSubject
+    AddSubjectToCurriculum, StudentCurriculum, OpenSubject, DepartmentListing, DepartmentNew
 from api.rest.TestData import TestCall
 
 
@@ -27,6 +27,8 @@ api.add_resource(StudentLogin, '/login')
 api.add_resource(AdminLogin, '/admin-login')
 api.add_resource(FacultyAccountCreate, '/admin-create')
 api.add_resource(NewCurriculumData, '/new-curriculum')
+api.add_resource(DepartmentListing, '/all-department')
+api.add_resource(DepartmentNew, '/new-department')
 api.add_resource(CurriculumData, '/curriculum-data')
 api.add_resource(AddSubjectToCurriculum, '/curriculum/add-subject')
 api.add_resource(StudentCurriculum, '/curriculum/get-curriculum')

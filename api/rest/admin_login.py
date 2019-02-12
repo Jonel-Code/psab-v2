@@ -82,3 +82,39 @@ class FacultyAccountCreate(Resource):
                 }
             }
         return response_checker(f_data, ret_v, err_msg='Account_name already Exist', err_num=409)
+
+
+class DepartmentListing(Resource):
+    def get(self):
+        from core.models.GeneralData import Department
+        rv: [Department] = Department.all_department()
+        if rv is not None:
+            r = [x.to_json for x in rv]
+            return response_checker(True, r)
+        else:
+            return response_checker(None, None, err_msg='no list of departments', err_num=200)
+
+
+class DepartmentNew(Resource):
+    def post(self):
+        parser = quick_parse([
+            ('department_name', True)
+        ])
+        data = parser.parse_args()
+        dn = data['department_name']
+
+        rv = {'message': 'server error', 'data': []}
+        from core.models.GeneralData import Department
+        t: Department = Department.search_dept(dn)
+        if t is not None:
+            rv['message'] = 'duplicate name'
+            rv['data'] = t.to_json
+            return response_checker(True, rv)
+        try:
+            d = Department(dn)
+            d.save()
+            rv = {'message': 'added new Department',
+                  'data': d.to_json}
+        except Exception as e:
+            rv['message'] = e
+        return response_checker(True, rv)

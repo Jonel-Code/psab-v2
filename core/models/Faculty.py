@@ -24,7 +24,11 @@ class FacultyAccounts(db.Model, SavableModel):
     account_password = db.Column(db.String(64))
     account_type = db.Column(db.Enum(AccountType))
 
-    def __init__(self, account_name: str, account_password: str, department: Department, account_type: AccountType):
+    def __init__(self,
+                 account_name: str,
+                 account_password: str,
+                 department: Department,
+                 account_type: AccountType):
         self.account_name = account_name
         self.account_password = account_password
         self.department_id = department.id

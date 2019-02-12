@@ -13,7 +13,18 @@ class Department(db.Model, SavableModel):
 
     @staticmethod
     def search_dept(name: str):
-        return Department.query.filter_by(name=name).first()
+        return Department.query.filter_by(name=name.lower()).first()
+
+    @staticmethod
+    def all_department():
+        return Department.query.all()
+
+    @property
+    def to_json(self):
+        return  {
+                'id': self.id,
+                'name' : self.name
+            }
 
 
 class Course(db.Model, SavableModel):
