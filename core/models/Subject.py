@@ -154,6 +154,15 @@ class Curriculum(db.Model, SavableModel):
             'subjects': self.subject_list_to_json
         }
 
+    @property
+    def to_json_lite(self):
+        return {
+            'curriculum_id': self.id,
+            'year': self.year,
+            'description': self.description,
+            'course': self.course.title
+        }
+
 
 class CurriculumSubjects(db.Model, SavableModel):
     __tablename__ = 'curriculumSubjects'

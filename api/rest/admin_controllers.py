@@ -275,9 +275,8 @@ class GetDepartmentCurriculum(Resource):
         c: [Course] = Course.find_course_under_department(d)
         if len(c) > 0:
             c_titles = [{
-                'title': z.title,
                 'curriculum_data': [
-                    q.to_json for q in Curriculum.curriculum_under_course(z)
+                    q.to_json_lite for q in Curriculum.curriculum_under_course(z)
                 ]
             } for z in c]
             rv['result'] = c_titles
