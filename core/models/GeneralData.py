@@ -21,10 +21,10 @@ class Department(db.Model, SavableModel):
 
     @property
     def to_json(self):
-        return  {
-                'id': self.id,
-                'name' : self.name
-            }
+        return {
+            'id': self.id,
+            'name': self.name
+        }
 
 
 class Course(db.Model, SavableModel):
@@ -41,3 +41,7 @@ class Course(db.Model, SavableModel):
     @staticmethod
     def find_course_title(t: str):
         return Course.query.filter_by(title=t.lower()).first()
+
+    @staticmethod
+    def find_course_under_department(x: Department):
+        return Course.query.filter_by(department_id=x.id).all()

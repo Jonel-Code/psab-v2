@@ -131,6 +131,10 @@ class Curriculum(db.Model, SavableModel):
     def search_curriculum(id_value: int):
         return Curriculum.query.filter_by(id=id_value).first()
 
+    @staticmethod
+    def curriculum_under_course(x: Course):
+        return Curriculum.query.filter_by(course_id=x.id).all()
+
     @property
     def subject_list_to_json(self):
         return [{'subject_id': s.id, 'subject_code': s.code, 'title': s.title, 'pre_req': s.pre_requisite_codes} for s
