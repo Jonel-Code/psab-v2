@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 from instance.config import app_config
 from api.rest import StudentLogin, AdminLogin, FacultyAccountCreate, NewCurriculumData, CurriculumData, \
-    AddSubjectToCurriculum, StudentCurriculum, OpenSubject, DepartmentListing, DepartmentNew, GetDepartmentCurriculum
+    AddSubjectToCurriculum, StudentCurriculum, OpenSubject, DepartmentListing, DepartmentNew, GetDepartmentCurriculum, \
+    BulkSubjectUpload
 from api.rest.TestData import TestCall
 
 
@@ -31,11 +32,12 @@ api.add_resource(DepartmentListing, '/all-department')
 api.add_resource(DepartmentNew, '/new-department')
 api.add_resource(CurriculumData, '/curriculum-data')
 api.add_resource(AddSubjectToCurriculum, '/curriculum/add-subject')
+api.add_resource(BulkSubjectUpload, '/curriculum/add-bulk-subject')
 api.add_resource(StudentCurriculum, '/curriculum/get-curriculum')
 api.add_resource(OpenSubject, '/subjects/opened')
 api.add_resource(GetDepartmentCurriculum, '/department-curriculum')
 api.add_resource(TestCall, '/test')
-
+# BulkSubjectUpload
 
 if __name__ == '__main__':
     app.run()
