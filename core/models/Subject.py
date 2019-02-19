@@ -13,13 +13,16 @@ class Subject(db.Model, SavableModel):
     pre_req = db.Column(db.String(60))
     year = db.Column(db.Enum(YearEnum))
     semester = db.Column(db.Enum(SemesterEnum))
+    units = db.Column(db.Integer)
 
     def __init__(self,
                  code: str,
                  title: str,
                  pre_req: list,
                  year: YearEnum,
-                 semester: SemesterEnum):
+                 semester: SemesterEnum,
+                 units: int):
+        self.units = units
         self.code = code
         self.title = title
         if len(pre_req) > 0:
@@ -43,6 +46,7 @@ class Subject(db.Model, SavableModel):
                       pre_req: list,
                       year: YearEnum,
                       semester: SemesterEnum,
+                      units: int,
                       create_if_not_exist=False):
         sep = ','
         pre_req = sep.join(pre_req) if len(pre_req) > 0 else ''
@@ -51,7 +55,8 @@ class Subject(db.Model, SavableModel):
             title=title,
             pre_req=pre_req,
             year=year,
-            semester=semester
+            semester=semester,
+            units=units
         ).first()
         if s is None and create_if_not_exist:
             pre_req = pre_req.split(sep) if len(pre_req) > 0 else []
@@ -60,7 +65,8 @@ class Subject(db.Model, SavableModel):
                 title=title,
                 pre_req=pre_req,
                 year=year,
-                semester=semester
+                semester=semester,
+                units=units
             )
             s.save()
         return s
@@ -83,6 +89,16 @@ class Subject(db.Model, SavableModel):
             department_id=dept.id
         ).first()
         return a is not None
+
+    @property
+    def to_json(self):
+        return {
+            'subject_id': self.id,
+            'subject_code': self.code,
+            'title': self.title,
+            'pre_req': self.pre_requisite_codes,
+            'units': self.units
+        }
 
 
 class Curriculum(db.Model, SavableModel):
@@ -137,7 +153,7 @@ class Curriculum(db.Model, SavableModel):
 
     @property
     def subject_list_to_json(self):
-        return [{'subject_id': s.id, 'subject_code': s.code, 'title': s.title, 'pre_req': s.pre_requisite_codes} for s
+        return [s.to_json for s
                 in self.subject_list]
 
     @property

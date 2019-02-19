@@ -90,6 +90,7 @@ class AddSubjectToCurriculum(Resource):
         pre_req = 'pre_req'
         year = 'year'
         semester = 'semester'
+        units = 'units'
         parser = quick_parse([
             (curriculum_id, True),
             (code, True),
@@ -97,6 +98,7 @@ class AddSubjectToCurriculum(Resource):
             (pre_req, False),
             (year, True),
             (semester, True),
+            (units, True),
         ])
         data = parser.parse_args()
 
@@ -106,6 +108,7 @@ class AddSubjectToCurriculum(Resource):
         _pre_req = str(data[pre_req]).split(',') if len(data[pre_req]) > 0 is not None else []
         _year = data[year]
         _semester = data[semester]
+        _units = data[units]
 
         from core.models.Subject import Curriculum, Subject
         from core.models.CurriculumEnums import YearEnum, SemesterEnum
@@ -121,6 +124,7 @@ class AddSubjectToCurriculum(Resource):
                 pre_req=_pre_req,
                 year=__year,
                 semester=__semester,
+                units=_units,
                 create_if_not_exist=True
             )
             ch = c.search_subject(s.code)
@@ -226,8 +230,6 @@ class NewSubjectCluster(Resource):
         s: SubjectClusters = SubjectClusters.search_cluster_name(name)
         if s is not None:
             return response_checker(None, None, 'duplicate subject cluster name', 404)
-        rv = {}
-
         try:
             ns = SubjectClusters(name=name)
             ns.save()
