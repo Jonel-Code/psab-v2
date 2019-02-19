@@ -9,6 +9,58 @@ def get_curriculum(id_v: int):
     return c
 
 
+def new_subject(data):
+    curriculum_id = 'curriculum_id'
+    code = 'code'
+    title = 'title'
+    pre_req = 'pre_req'
+    year = 'year'
+    semester = 'semester'
+    units = 'units'
+    data_keys = data.keys()
+
+    c_id = data[curriculum_id]
+    _code = str(data[code]).strip()
+    _title = data[title]
+    _pre_req = []
+    if pre_req in data_keys:
+        dz = str(data[pre_req]).strip()
+        _pre_req = dz.split(',')
+    _year = data[year]
+    _semester = data[semester]
+    _units = data[units]
+
+    from core.models.Subject import Curriculum, Subject
+    from core.models.CurriculumEnums import YearEnum, SemesterEnum
+    __year = YearEnum(_year)
+    __semester = SemesterEnum(_semester)
+    c: Curriculum = get_curriculum(c_id)
+
+    rv = None
+    res_code = 409
+    if c is not None:
+        s: Subject = Subject.check_subject(
+            code=_code,
+            title=_title,
+            pre_req=_pre_req,
+            year=__year,
+            semester=__semester,
+            units=_units,
+            create_if_not_exist=True
+        )
+        ch = c.search_subject(s.code)
+        if ch is None:
+            c.add_a_subject(s)
+            res_code = 200
+
+        rv = {
+            'subject_id': s.id,
+            'note': 'added new subject' if ch is None else 'Subject already in Curriculum'
+        }
+
+    return response_checker(c, rv, res_code=res_code, err_msg='Subject not added', err_num=500)
+
+
 class CurriculumData(Resource):
     def get(self):
         curriculum_id = 'curriculum_id'
@@ -49,13 +101,11 @@ class NewCurriculumData(Resource):
         desc = data[description]
         c = str(data[course]).lower()
         dept = str(data[department]).lower()
+        if len(c) == 0 or len(desc) == 0 or len(y) == 0 or len(dept) == 0:
+            return response_checker(None, {}, err_msg='error in request', err_num=501)
 
         from core.models.Subject import Course, Department
         from core.models.Subject import Curriculum
-
-        checker = Curriculum.query.filter_by(year=y, description=desc).first()
-        if checker is not None:
-            return response_checker(None, {}, err_msg='Curriculum with same year and description detected', err_num=401)
 
         c_data: Curriculum = None
         e_msg = 'Server Error'
@@ -68,6 +118,12 @@ class NewCurriculumData(Resource):
             if _course is None:
                 _course = Course(c, _department)
                 _course.save()
+
+            checker = Curriculum.query.filter_by(year=y, description=desc, course_id=_course.id).first()
+            if checker is not None:
+                return response_checker(None, {}, err_msg='Curriculum with same year and description detected',
+                                        err_num=409)
+
             c_data = Curriculum(y, desc, _course)
             c_data.save()
         except Exception as e:
@@ -90,6 +146,7 @@ class AddSubjectToCurriculum(Resource):
         pre_req = 'pre_req'
         year = 'year'
         semester = 'semester'
+        units = 'units'
         parser = quick_parse([
             (curriculum_id, True),
             (code, True),
@@ -97,42 +154,12 @@ class AddSubjectToCurriculum(Resource):
             (pre_req, False),
             (year, True),
             (semester, True),
+            (units, True),
         ])
         data = parser.parse_args()
 
-        c_id = data[curriculum_id]
-        _code = data[code]
-        _title = data[title]
-        _pre_req = str(data[pre_req]).split(',') if len(data[pre_req]) > 0 is not None else []
-        _year = data[year]
-        _semester = data[semester]
-
-        from core.models.Subject import Curriculum, Subject
-        from core.models.CurriculumEnums import YearEnum, SemesterEnum
-        __year = YearEnum(_year)
-        __semester = SemesterEnum(_semester)
-        c: Curriculum = get_curriculum(c_id)
-
-        rv = None
-        if c is not None:
-            s: Subject = Subject.check_subject(
-                code=_code,
-                title=_title,
-                pre_req=_pre_req,
-                year=__year,
-                semester=__semester,
-                create_if_not_exist=True
-            )
-            ch = c.search_subject(s.code)
-            if ch is None:
-                c.add_a_subject(s)
-
-            rv = {
-                'subject_id': s.id,
-                'note': 'added new subject' if ch is None else 'Subject already in Curriculum'
-            }
-
-        return response_checker(c, rv, err_msg='Subject not added', err_num=500)
+        rv = new_subject(data)
+        return rv
 
 
 class StudentCurriculum(Resource):
@@ -210,7 +237,7 @@ class NewSubjectCluster(Resource):
 
         s: SubjectClusters = SubjectClusters.search_cluster_name(data['name'])
         if s is None:
-            return response_checker(None, None, 'not found', 404)
+            return response_checker(None, None, err_msg='not found', err_num=404)
         rv = {'found': s.subjects_under}
         return response_checker(True, rv)
 
@@ -226,8 +253,6 @@ class NewSubjectCluster(Resource):
         s: SubjectClusters = SubjectClusters.search_cluster_name(name)
         if s is not None:
             return response_checker(None, None, 'duplicate subject cluster name', 404)
-        rv = {}
-
         try:
             ns = SubjectClusters(name=name)
             ns.save()
@@ -238,7 +263,7 @@ class NewSubjectCluster(Resource):
             }
         except Exception as e:
             rv = {'message': e}
-        return response_checker(True, rv, rv['message'], 500)
+        return response_checker(True, rv, err_msg=rv['message'], err_num=500)
 
 
 class GetSubjectEquivalent(Resource):
@@ -282,3 +307,75 @@ class GetDepartmentCurriculum(Resource):
             rv['result'] = c_titles
 
         return response_checker(True, rv)
+
+
+class BulkSubjectUpload(Resource):
+    def post(self):
+        curriculum_id = 'curriculum_id'
+        content = 'content'
+        req_params: list((str, bool)) = [
+            (curriculum_id, True),
+            (content, True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        import json
+        _c = json.loads(data[content])
+        _cid = data[curriculum_id]
+
+        from core.models.Subject import Curriculum
+        curr = Curriculum.search_curriculum(int(_cid))
+        if curr is None:
+            return response_checker(True, {'message': 'curriculum id not found'}, res_code=404)
+
+        errors = []
+        if isinstance(_c, list):
+            for x in _c:
+                if isinstance(x, dict):
+                    x_keys = x.keys()
+                    _2_add = {
+                        'curriculum_id': _cid,
+                        'code': str(x['code']).replace(' ', ''),
+                        'title': x['title'],
+                        'year': x['year'],
+                        'semester': x['semester'],
+                        'units': x['units'],
+                    }
+                    if 'pre_req' in x_keys:
+                        _2_add['pre_req'] = str(x['pre_req']).replace(' ', '')
+                    rv, n, a = new_subject(_2_add)
+                    if isinstance(n, int):
+                        if n != 200:
+                            _2_add['error'] = {
+                                'code': n,
+                                'note': rv['note']
+                            }
+                            errors.append(_2_add)
+        rv = {
+            'response': {
+                'errors': errors
+            }
+        }
+
+        return response_checker(True, rv)
+
+
+class DeleteCurriculum(Resource):
+    def post(self):
+        curriculum_id = 'curriculum_id'
+        req_params: list((str, bool)) = [
+            (curriculum_id, True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        cid = data[curriculum_id]
+        msg = 'deleted'
+        r_num = 200
+        from core.models.Subject import Curriculum, db
+        Curriculum.query.filter_by(id=cid).delete()
+        db.session.commit()
+        # try:
+        #
+        # except Exception as e:
+        #     msg = e
+        #     r_num = 500
+        rv = {'message': msg}
+        return response_checker(True, rv, res_code=r_num)
