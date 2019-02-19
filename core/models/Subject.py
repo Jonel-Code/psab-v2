@@ -38,7 +38,10 @@ class Subject(db.Model, SavableModel):
 
     @property
     def pre_requisite_codes(self) -> [str]:
-        return self.pre_req.split(self._pre_req_separator)
+        r = []
+        if len(self.pre_req) > 0:
+            r = self.pre_req.split(self._pre_req_separator)
+        return r
 
     @staticmethod
     def check_subject(code: str,
@@ -97,7 +100,9 @@ class Subject(db.Model, SavableModel):
             'subject_code': self.code,
             'title': self.title,
             'pre_req': self.pre_requisite_codes,
-            'units': self.units
+            'units': self.units,
+            'semester': self.semester.value,
+            'year': self.year.value
         }
 
 

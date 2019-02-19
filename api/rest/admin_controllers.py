@@ -107,10 +107,6 @@ class NewCurriculumData(Resource):
         from core.models.Subject import Course, Department
         from core.models.Subject import Curriculum
 
-        checker = Curriculum.query.filter_by(year=y, description=desc).first()
-        if checker is not None:
-            return response_checker(None, {}, err_msg='Curriculum with same year and description detected', err_num=409)
-
         c_data: Curriculum = None
         e_msg = 'Server Error'
         try:
@@ -122,6 +118,12 @@ class NewCurriculumData(Resource):
             if _course is None:
                 _course = Course(c, _department)
                 _course.save()
+
+            checker = Curriculum.query.filter_by(year=y, description=desc, course_id=_course.id).first()
+            if checker is not None:
+                return response_checker(None, {}, err_msg='Curriculum with same year and description detected',
+                                        err_num=409)
+
             c_data = Curriculum(y, desc, _course)
             c_data.save()
         except Exception as e:
@@ -235,7 +237,7 @@ class NewSubjectCluster(Resource):
 
         s: SubjectClusters = SubjectClusters.search_cluster_name(data['name'])
         if s is None:
-            return response_checker(None, None, 'not found', 404)
+            return response_checker(None, None, err_msg='not found', err_num=404)
         rv = {'found': s.subjects_under}
         return response_checker(True, rv)
 
@@ -261,7 +263,7 @@ class NewSubjectCluster(Resource):
             }
         except Exception as e:
             rv = {'message': e}
-        return response_checker(True, rv, rv['message'], 500)
+        return response_checker(True, rv, err_msg=rv['message'], err_num=500)
 
 
 class GetSubjectEquivalent(Resource):
@@ -321,12 +323,9 @@ class BulkSubjectUpload(Resource):
         _cid = data[curriculum_id]
 
         from core.models.Subject import Curriculum
-        try:
-            curr = Curriculum.search_curriculum(int(_cid))
-            if curr is None:
-                return response_checker(True, {})
-        except Exception as z:
-            return response_checker(None, {}, err_msg='server error', err_num=200)
+        curr = Curriculum.search_curriculum(int(_cid))
+        if curr is None:
+            return response_checker(True, {'message': 'curriculum id not found'}, res_code=404)
 
         errors = []
         if isinstance(_c, list):
@@ -358,3 +357,25 @@ class BulkSubjectUpload(Resource):
         }
 
         return response_checker(True, rv)
+
+
+class DeleteCurriculum(Resource):
+    def post(self):
+        curriculum_id = 'curriculum_id'
+        req_params: list((str, bool)) = [
+            (curriculum_id, True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        cid = data[curriculum_id]
+        msg = 'deleted'
+        r_num = 200
+        from core.models.Subject import Curriculum, db
+        Curriculum.query.filter_by(id=cid).delete()
+        db.session.commit()
+        # try:
+        #
+        # except Exception as e:
+        #     msg = e
+        #     r_num = 500
+        rv = {'message': msg}
+        return response_checker(True, rv, res_code=r_num)
