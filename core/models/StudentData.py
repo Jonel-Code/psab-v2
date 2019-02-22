@@ -55,6 +55,10 @@ class StudentData(db.Model, SavableModel):
             return []
         return self.curriculum.subject_list_to_json
 
+    @staticmethod
+    def search_student(sid):
+        return StudentData.query.filter_by(student_id=sid).first()
+
 
 class StudentGrades(db.Model):
     __tablename__ = 'studentGrades'
@@ -71,3 +75,7 @@ class StudentGrades(db.Model):
         self.student_id = student_id
         self.subject_code = subject_code
         self.grade = grade
+
+    @staticmethod
+    def check_grade(sid, scode):
+        return StudentGrades.query.filter_by(student_id=sid, subject_code=scode).first()
