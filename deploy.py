@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from instance.config import app_config
 from api.rest import StudentLogin, AdminLogin, FacultyAccountCreate, NewCurriculumData, CurriculumData, \
     AddSubjectToCurriculum, StudentCurriculum, OpenSubject, DepartmentListing, DepartmentNew, GetDepartmentCurriculum, \
-    BulkSubjectUpload, DeleteCurriculum
+    BulkSubjectUpload, DeleteCurriculum, UploadStudentData, DeleteStudentData, UploadStudentGrade
 from api.rest.TestData import TestCall
 
 
@@ -49,8 +49,14 @@ api.add_resource(OpenSubject, '/subjects/opened')
 
 api.add_resource(GetDepartmentCurriculum, '/department-curriculum')
 
+api.add_resource(UploadStudentData, '/student/upload-data')
+
+api.add_resource(DeleteStudentData, '/student/delete-data')
+
+api.add_resource(UploadStudentGrade, '/student/upload-grade')
+
 api.add_resource(TestCall, '/test')
-# DeleteCurriculum
+# UploadStudentGrade
 
 if __name__ == '__main__':
     app.run()

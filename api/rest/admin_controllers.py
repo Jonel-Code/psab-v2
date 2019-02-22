@@ -369,8 +369,9 @@ class DeleteCurriculum(Resource):
         cid = data[curriculum_id]
         msg = 'deleted'
         r_num = 200
-        from core.models.Subject import Curriculum, db
+        from core.models.Subject import Curriculum, CurriculumSubjects, db
         Curriculum.query.filter_by(id=cid).delete()
+        CurriculumSubjects.query.filter_by(curriculum_id=cid).delete()
         db.session.commit()
         # try:
         #
@@ -379,3 +380,131 @@ class DeleteCurriculum(Resource):
         #     r_num = 500
         rv = {'message': msg}
         return response_checker(True, rv, res_code=r_num)
+
+
+class DeleteStudentData(Resource):
+    def post(self):
+        student_id = 'student_id'
+        req_params: list((str, bool)) = [
+            (student_id, True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        sid = data[student_id]
+        msg = 'deleted'
+        r_num = 200
+        try:
+            from core.models.StudentData import StudentData, db
+            StudentData.query.filter_by(student_id=sid).delete()
+            db.session.commit()
+        except Exception as e:
+            msg = e
+            r_num = 500
+        rv = {'message': msg}
+        return response_checker(True, rv, res_code=r_num)
+
+
+class UploadStudentData(Resource):
+    def post(self):
+        content = 'content'
+        req_params: list((str, bool)) = [
+            (content, True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        import json
+        c = json.loads(data[content])
+        err_items = []
+        uploaded = []
+        from core.models.StudentData import StudentData, Course
+        from core.models.CurriculumEnums import YearEnum
+
+        def req_ok(r_f):
+            for r in r_f:
+                if r is None:
+                    return False
+            return True
+
+        if isinstance(c, list):
+            for s in c:
+                s_id = s['student_id']
+                s_fn = s['full_name']
+                s_c = s['course']
+                s_y = s['year']
+                req_f = [s_id, s_fn, s_c, s_y]
+                r_ok = req_ok(req_f)
+                err_items.append(s_id)
+                if not r_ok:
+                    err_items.append(s)
+                    continue
+                es = StudentData.search_student(s_id)
+                if es is None:
+                    continue
+
+                z = StudentData.search_student(s_id)
+                if z is not None:
+                    continue
+                _s_c = Course.find_course_title(s_c)
+                if _s_c is None:
+                    continue
+
+                z: StudentData = StudentData(s_id, s_fn, _s_c, YearEnum(s_y))
+                z.save()
+                uploaded.append(z.student_id)
+                del err_items[-1]
+        rv = {'response': {
+            'uploaded': uploaded,
+            'errors': err_items
+        }}
+        return response_checker(True, rv, res_code=200)
+
+
+class UploadStudentGrade(Resource):
+    def post(self):
+        content = 'content'
+        req_params: list((str, bool)) = [
+            (content, True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        import json
+        c = json.loads(data[content])
+        err_items = []
+        uploaded = []
+        updated = []
+        from core.models.StudentData import StudentGrades, db
+
+        def req_ok(r_f):
+            for r in r_f:
+                if r is None:
+                    return False
+            return True
+
+        if isinstance(c, list):
+            for s in c:
+                s_id = int(s['student_id'])
+                s_scode = str(s['subject_code']).replace(' ', '')
+                s_g = float(s['grade'])
+                req_f = [s_id, s_scode, s_g]
+                r_ok = req_ok(req_f)
+                err_items.append(s_id)
+                if not r_ok:
+                    err_items.append(s)
+                    continue
+                sg_c: StudentGrades = StudentGrades.check_grade(s_id, s_g)
+                if sg_c is None:
+                    z: StudentGrades = StudentGrades(s_id, s_scode, s_g)
+                    z.save()
+                    uploaded.append(z.student_id)
+                    del err_items[-1]
+                else:
+                    sg_c.grade = s_g
+                    updated.append(
+                        {'student_id': sg_c.student_id, 'subject_code': sg_c.subject_code, 'grade': sg_c.grade}
+                    )
+                    del err_items[-1]
+                    db.session.commit()
+
+        rv = {'response': {
+            'uploaded': uploaded,
+            'updated': updated,
+            'errors': err_items
+        }}
+        return response_checker(True, rv, res_code=200)
