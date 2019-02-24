@@ -36,9 +36,17 @@ class StudentData(db.Model, SavableModel):
                  course: Course,
                  year: YearEnum):
         self.student_id = student_id
-        self.full_name = full_name
+        self.full_name = full_name.lower()
         self.course_id = course.id
         self.year = year
+
+    @property
+    def student_full_name(self):
+        return self.full_name.lower()
+
+    @student_full_name.setter
+    def student_full_name(self, val: str):
+        self.full_name = val.lower()
 
     @property
     def course(self):
@@ -57,10 +65,10 @@ class StudentData(db.Model, SavableModel):
 
     @staticmethod
     def search_student(sid):
-        return StudentData.query.filter_by(student_id=sid).first()
+        return StudentData.query.filter_by(student_id=int(sid)).first()
 
 
-class StudentGrades(db.Model):
+class StudentGrades(db.Model, SavableModel):
     __tablename__ = 'studentGrades'
 
     id = db.Column(db.Integer, primary_key=True)
