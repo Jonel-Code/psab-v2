@@ -85,5 +85,5 @@ class StudentGrades(db.Model, SavableModel):
         self.grade = grade
 
     @staticmethod
-    def check_grade(sid, scode):
+    def check_grade(sid: int, scode: str):
         return StudentGrades.query.filter_by(student_id=sid, subject_code=scode).first()

@@ -492,7 +492,8 @@ class UploadStudentGrade(Resource):
                 if not r_ok:
                     err_items.append(s)
                     continue
-                sg_c: StudentGrades = StudentGrades.check_grade(s_id, s_g)
+                sg_c: StudentGrades = StudentGrades.check_grade(int(s_id), str(s_scode))
+                print('sg_c', sg_c)
                 if sg_c is None:
                     z: StudentGrades = StudentGrades(int(s_id),
                                                      str(s_scode).replace(' ', '').lower(),
