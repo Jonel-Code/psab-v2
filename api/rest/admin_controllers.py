@@ -334,14 +334,14 @@ class BulkSubjectUpload(Resource):
                     x_keys = x.keys()
                     _2_add = {
                         'curriculum_id': _cid,
-                        'code': str(x['code']).replace(' ', ''),
+                        'code': str(x['code']).replace(' ', '').lower(),
                         'title': x['title'],
                         'year': x['year'],
                         'semester': x['semester'],
                         'units': x['units'],
                     }
                     if 'pre_req' in x_keys:
-                        _2_add['pre_req'] = str(x['pre_req']).replace(' ', '')
+                        _2_add['pre_req'] = str(x['pre_req']).replace(' ', '').lower()
                     rv, n, a = new_subject(_2_add)
                     if isinstance(n, int):
                         if n != 200:
@@ -419,10 +419,11 @@ class UploadStudentData(Resource):
 
         def req_ok(r_f):
             for r in r_f:
-                if r is None:
+                if r is None or len(str(r)) == 0:
                     return False
             return True
 
+        print('c', c)
         if isinstance(c, list):
             for s in c:
                 s_id = s['student_id']
@@ -433,11 +434,11 @@ class UploadStudentData(Resource):
                 r_ok = req_ok(req_f)
                 err_items.append(s_id)
                 if not r_ok:
-                    err_items.append(s)
+                    # err_items.append(s)
                     continue
-                es = StudentData.search_student(s_id)
-                if es is None:
-                    continue
+                # es = StudentData.search_student(s_id)
+                # if es is None:
+                #     continue
 
                 z = StudentData.search_student(s_id)
                 if z is not None:
@@ -446,7 +447,10 @@ class UploadStudentData(Resource):
                 if _s_c is None:
                     continue
 
-                z: StudentData = StudentData(s_id, s_fn, _s_c, YearEnum(s_y))
+                z: StudentData = StudentData(int(s_id),
+                                             str(s_fn).strip(),
+                                             _s_c,
+                                             YearEnum(str(s_y).lower()))
                 z.save()
                 uploaded.append(z.student_id)
                 del err_items[-1]
@@ -473,24 +477,27 @@ class UploadStudentGrade(Resource):
 
         def req_ok(r_f):
             for r in r_f:
-                if r is None:
+                if r is None or len(str(r)) == 0:
                     return False
             return True
 
         if isinstance(c, list):
             for s in c:
-                s_id = int(s['student_id'])
-                s_scode = str(s['subject_code']).replace(' ', '')
-                s_g = float(s['grade'])
+                s_id = s['student_id']
+                s_scode = s['subject_code']
+                s_g = s['grade']
                 req_f = [s_id, s_scode, s_g]
                 r_ok = req_ok(req_f)
                 err_items.append(s_id)
                 if not r_ok:
                     err_items.append(s)
                     continue
-                sg_c: StudentGrades = StudentGrades.check_grade(s_id, s_g)
+                sg_c: StudentGrades = StudentGrades.check_grade(int(s_id), str(s_scode))
+                print('sg_c', sg_c)
                 if sg_c is None:
-                    z: StudentGrades = StudentGrades(s_id, s_scode, s_g)
+                    z: StudentGrades = StudentGrades(int(s_id),
+                                                     str(s_scode).replace(' ', '').lower(),
+                                                     float(s_g))
                     z.save()
                     uploaded.append(z.student_id)
                     del err_items[-1]
