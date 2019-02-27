@@ -299,3 +299,112 @@ class SubjectEquivalents(db.Model, SavableModel):
             if x in c_subj and x not in res:
                 res.append(x)
         return res
+
+
+class NewSemData(db.Model, SavableModel):
+    __tablename__ = 'newSemData'
+
+    id = db.Column(db.Integer, primary_key=True)
+    sys_year = db.Column(db.Integer)
+    semester = db.Column(db.Enum(SemesterEnum))
+    is_current_semester = db.Column(db.Boolean)
+
+    def __init__(self, sys_year: int, semester: SemesterEnum):
+        if not NewSemData.new_sem_is_unique(sys_year, semester):
+            raise Exception('duplicate Data Detected')
+        l = NewSemData.latest_id()
+        self.id = 0 if l is None else l.id + 1
+        self.sys_year = sys_year
+        self.semester = semester
+        self.use_as_current()
+
+    def use_as_current(self):
+        o = NewSemData.query.filter_by().all()
+        for x in o:
+            if x.id == self.id:
+                x.is_current_semester = True
+                continue
+            x.is_current_semester = False
+        db.session.commit()
+
+    @staticmethod
+    def latest_id():
+        ls = NewSemData.query.order_by(NewSemData.id.desc()).first()
+        return ls
+
+    @staticmethod
+    def new_sem_is_unique(sys_year: int, sem: SemesterEnum):
+        rv = NewSemData.query.filter_by(sys_year=sys_year, semester=sem).first()
+        print('rv', rv)
+        return rv is None
+
+    def to_json(self):
+        s = AvailableSubjectEnhance.query.filter_by(new_sem_id=self.id).all()
+        s_l = []
+        if s is not None:
+            s_l = [q.subject_code for q in s]
+        rv = {
+            'year': self.sys_year,
+            'semester': self.semester.value,
+            'subjects': s_l
+        }
+        return rv
+
+    def to_json_lite(self):
+        rv = {
+            'id': self.id,
+            'year': self.sys_year,
+            'semester': self.semester.value,
+            'activated': self.is_current_semester
+        }
+        return rv
+
+
+class AvailableSubjectEnhance(db.Model, SavableModel):
+    __tablename__ = 'availableSubjectEnhance'
+
+    id = db.Column(db.Integer, primary_key=True)
+    # sys_year = db.Column(db.Integer)
+    # semester = db.Column(db.Enum(SemesterEnum))
+    new_sem_id = db.Column(db.Integer, db.ForeignKey('newSemData.id'))
+    subject_code = db.Column(db.String(50))
+
+    def __init__(self, new_sem_data: NewSemData, subject_code: str):
+        if not AvailableSubjectEnhance.is_unique(new_sem_data, subject_code):
+            raise Exception('duplicate entry of subject this year and semester')
+        self.subject_code = subject_code
+        self.new_sem_id = new_sem_data.id
+
+    @property
+    def new_sem(self) -> NewSemData:
+        return NewSemData.query.filter_by(id=self.new_sem_id).first()
+
+    @property
+    def sys_year(self):
+        return self.new_sem.sys_year
+
+    @property
+    def semester(self):
+        return self.new_sem.semester
+
+    @staticmethod
+    def is_unique(new_sem_data: NewSemData, subject_code: str):
+        z = AvailableSubjectEnhance.query.filter_by(
+            new_sem_id=new_sem_data.id,
+            subject_code=subject_code
+        ).first()
+        return z is None
+
+    @staticmethod
+    def get_opened_subjects(new_sem_data: NewSemData):
+        z = AvailableSubjectEnhance.query.filter_by(
+            new_sem_id=new_sem_data.id
+        ).all()
+        return z
+
+    def to_json(self):
+        return {
+            'school_year': self.sys_year,
+            'semester': self.semester.value,
+            'subject_code': self.subject_code
+        }
