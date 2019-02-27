@@ -15,7 +15,7 @@ class YearEnum(enum.Enum):
 class SemesterEnum(enum.Enum):
     first = 'first semester'
     second = 'second semester'
-    summer = 'summer year'
+    summer = 'summer semester'
 
     @staticmethod
     def to_list():

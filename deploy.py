@@ -5,7 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from instance.config import app_config
 from api.rest import StudentLogin, AdminLogin, FacultyAccountCreate, NewCurriculumData, CurriculumData, \
     AddSubjectToCurriculum, StudentCurriculum, OpenSubject, DepartmentListing, DepartmentNew, GetDepartmentCurriculum, \
-    BulkSubjectUpload, DeleteCurriculum, UploadStudentData, DeleteStudentData, UploadStudentGrade
+    BulkSubjectUpload, DeleteCurriculum, UploadStudentData, DeleteStudentData, UploadStudentGrade, EnhancedStudentLogin, \
+    OpenSubjectEnhance
 from api.rest.TestData import TestCall
 
 
@@ -23,8 +24,11 @@ app = create_app(config_name)
 api = Api(app)
 db = SQLAlchemy(app)
 
+api.add_resource(EnhancedStudentLogin, '/new-login')
+
 api.add_resource(StudentLogin, '/login')
 # api.add_resource(curriculum_tree.CurriculumTree, '/curriculum_tree')
+
 api.add_resource(AdminLogin, '/admin-login')
 
 api.add_resource(FacultyAccountCreate, '/admin-create')
@@ -56,7 +60,15 @@ api.add_resource(DeleteStudentData, '/student/delete-data')
 api.add_resource(UploadStudentGrade, '/student/upload-grade')
 
 api.add_resource(TestCall, '/test')
-# UploadStudentGrade
+
+api.add_resource(OpenSubjectEnhance, '/open-subject-enhance')
+
+from api.rest.admin_controllers import SemDataListing, SemDataRemove, SemDataActivate
+
+api.add_resource(SemDataListing, '/sem-data-listing')
+api.add_resource(SemDataRemove, '/sem-data-remove')
+api.add_resource(SemDataActivate, '/sem-data-activate')
+# SemDataRemove
 
 if __name__ == '__main__':
     app.run()

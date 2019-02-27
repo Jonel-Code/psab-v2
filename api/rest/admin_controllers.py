@@ -201,29 +201,177 @@ class OpenSubject(Resource):
 
     def post(self):
         req_params: list((str, bool)) = [
-            ('department', True),
-            ('year', True),
-            ('semester', True),
-            ('subject_id', True)
+            ('content', True)
+            # ('department', True),
+            # ('year', True),
+            # ('semester', True),
+            # ('subject_id', True),
         ]
         data = quick_parse(req_params).parse_args()
-        sid = int(data['subject_id'])
-
+        # sid = int(data['subject_id'])
+        import json
         from core.models.Subject import Subject
+        content = json.loads(data['content'])
+        errs = []
+        for x in content:
+            sd = x['department']
+            sy = x['year']
+            ss = x['semester']
+            si = x['subject_id']
+            sub: Subject = Subject.query.filter_by(id=int(si)).first()
+            if sub is not None:
+                from core.models.GeneralData import Department
+                from core.models.CurriculumEnums import SemesterEnum
+                d = Department.search_dept(sd)
+                sem = SemesterEnum(ss)
+                year = sy
+                added = sub.open_subject(sem, year, d)
+                if not added:
+                    errs.append(json.dumps(x))
+        return response_checker(True, {'response': errs})
+        #
+        # s: Subject = Subject.query.filter_by(id=sid).first()
+        # print('is s', s)
+        # rv = 'error in server'
+        # if s is not None:
+        #     from core.models.GeneralData import Department
+        #     from core.models.CurriculumEnums import SemesterEnum
+        #     d = Department.search_dept(data['department'])
+        #     sem = SemesterEnum(data['semester'])
+        #     year = data['year']
+        #     added = s.open_subject(sem, year, d)
+        #     if added:
+        #         rv = f'Opened Subject this {year} on {sem.value}'
+        # return {'message': rv}, 200
 
-        s: Subject = Subject.query.filter_by(id=sid).first()
-        print('is s', s)
-        rv = 'error in server'
-        if s is not None:
-            from core.models.GeneralData import Department
-            from core.models.CurriculumEnums import SemesterEnum
-            d = Department.search_dept(data['department'])
-            sem = SemesterEnum(data['semester'])
-            year = data['year']
-            added = s.open_subject(sem, year, d)
-            if added:
-                rv = f'Opened Subject this {year} on {sem.value}'
-        return {'message': rv}, 200
+
+class OpenSubjectEnhance(Resource):
+    def get(self):
+        req_params: list((str, bool)) = [
+            ('year', False),
+            ('semester', False),
+            ('data_id', False),
+        ]
+        data = quick_parse(req_params).parse_args()
+        from core.models.Subject import AvailableSubjectEnhance, NewSemData
+        print('data', data)
+        if data['data_id'] is not None:
+            print('data_id', data['data_id'])
+            lz = NewSemData.query.filter_by(id=data['data_id']).first()
+            rz = []
+            if lz is not None:
+                rz = lz.to_json()
+            return {'data': rz}, 200, {'Access-Control-Allow-Origin': '*'}
+
+        if data['semester'] is None or data['year'] is None:
+            l = NewSemData.query.order_by(NewSemData.id.desc()).first()
+            rv = {}
+            if l is not None:
+                # ls = AvailableSubjectEnhance.query.filter_by(sys_year=sys).all()
+                rv = l.to_json()
+            return {'data': rv}, 200, {'Access-Control-Allow-Origin': '*'}
+
+        from core.models.CurriculumEnums import SemesterEnum
+        sem = SemesterEnum(data['semester'])
+        y = data['year']
+        ns = NewSemData.query.filter_by(sys_year=y, semester=sem).first()
+        rx = {}
+        if ns is not None:
+            rx = ns.to_json()
+        return {'data': rx}, 200, {'Access-Control-Allow-Origin': '*'}
+
+    def post(self):
+        req_params: list((str, bool)) = [
+            ('content', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        # sid = int(data['subject_id'])
+        import json
+        from core.models.Subject import AvailableSubjectEnhance, NewSemData
+        from core.models.CurriculumEnums import SemesterEnum
+        content = json.loads(data['content'])
+        sy = content['year']
+        ss = content['semester']
+        print('sem', ss)
+        try:
+            sem = SemesterEnum(ss)
+            print('sem', sem)
+            ns = NewSemData(sy, sem)
+            ns.save()
+        except Exception as e:
+            return response_checker(True, {'error': 'there is an error creating new Semester Data'}, res_code=500)
+        errs = []
+        for x in content['subject_code']:
+            sc = str(x)
+            try:
+                added = AvailableSubjectEnhance(ns, subject_code=sc)
+                added.save()
+            except Exception as e:
+                errs.append(json.dumps(x))
+        return response_checker(True, {'response': errs})
+
+
+class SemDataListing(Resource):
+    def get(self):
+        from core.models.Subject import NewSemData
+        d = NewSemData.query.filter_by().all()
+        rx = []
+        if d is not None:
+            rx = [x.to_json_lite() for x in d]
+        return response_checker(True, {'response': rx})
+
+
+class SemDataRemove(Resource):
+    def post(self):
+        req_params: list((str, bool)) = [
+            ('content', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        import json
+        from core.models.Subject import AvailableSubjectEnhance, NewSemData, db
+        content = json.loads(data['content'])
+        _id = content['sem_id']
+        print('data', data)
+        if _id is not None:
+            print('data_id', _id)
+            lz = NewSemData.query.filter_by(id=_id).first()
+            rz = []
+            if lz is not None:
+                s = AvailableSubjectEnhance.query.filter_by(new_sem_id=lz.id).all()
+                rz = [z.subject_code for z in s]
+                AvailableSubjectEnhance.query.filter_by(new_sem_id=lz.id).delete()
+                # for q in s:
+                #     rz.append(q.subject_code)
+                #     q.delete()
+                NewSemData.query.filter_by(id=lz.id).delete()
+                db.session.commit()
+                lts = NewSemData.latest_id()
+                lts.use_as_current()
+            return {'data': {'removed': rz}}, 200, {'Access-Control-Allow-Origin': '*'}
+
+
+class SemDataActivate(Resource):
+    def post(self):
+        req_params: list((str, bool)) = [
+            ('content', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        import json
+        from core.models.Subject import AvailableSubjectEnhance, NewSemData, db
+        content = json.loads(data['content'])
+        _id = content['sem_id']
+        print('data', data)
+        if _id is not None:
+            print('data_id', _id)
+            lz = NewSemData.query.filter_by(id=_id).first()
+            rz = False
+            if lz is not None:
+                try:
+                    lz.use_as_current()
+                    rz = True
+                except Exception as e:
+                    print('error', e)
+            return {'data': {'activated': rz}}, 200, {'Access-Control-Allow-Origin': '*'}
 
 
 class NewSubjectCluster(Resource):

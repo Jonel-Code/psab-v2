@@ -1,7 +1,16 @@
+from enum import Enum
+
 from deploy import db
 from core.models.CurriculumEnums import YearEnum
 from core.models.GeneralData import Course
 from core.models.Extension import SavableModel
+
+MIN_PASSED_GRADE = 3.0
+MAX_PASSED_GRADE = 0.01
+
+
+def grade_is_passed(grade: float):
+    return MIN_PASSED_GRADE >= grade >= MAX_PASSED_GRADE
 
 
 def nearest_curriculum(student_id: str, course_id: int, year_prefix: str):
@@ -20,6 +29,11 @@ def nearest_curriculum(student_id: str, course_id: int, year_prefix: str):
     cur = Curriculum.query.filter_by(course_id=course_id, year=str(cur_year)).all()
     latest_cur_id = max([x.id for x in cur])
     return Curriculum.query.filter_by(id=latest_cur_id).first()
+
+
+class StatusEnum(Enum):
+    regular = 'regular'
+    irregular = 'irregular'
 
 
 class StudentData(db.Model, SavableModel):
@@ -62,6 +76,36 @@ class StudentData(db.Model, SavableModel):
         if self.curriculum is None:
             return []
         return self.curriculum.subject_list_to_json
+
+    @property
+    def grades(self):
+        return StudentGrades.query.filter_by(student_id=self.student_id).all()
+
+    @property
+    def passed_subjects(self):
+        p = []
+        for x in self.grades:
+            z: StudentGrades = x
+            if grade_is_passed(float(z.grade)):
+                p.append(str(z.subject_code))
+        return p
+
+    def grades_2_list(self):
+        return [
+            {
+                'code': g.subject_code,
+                'grade': g.grade
+            } for g in self.grades
+        ]
+
+    def to_json(self):
+        return {
+            'id': self.student_id,
+            'name': self.full_name,
+            'year': self.year.name,
+            'course_curriculum': self.curriculum.to_json,
+            'grades': self.grades_2_list()
+        }
 
     @staticmethod
     def search_student(sid):
