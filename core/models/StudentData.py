@@ -103,6 +103,7 @@ class StudentData(db.Model, SavableModel):
             'id': self.student_id,
             'name': self.full_name,
             'year': self.year.name,
+            'course': self.course.title,
             'course_curriculum': self.curriculum.to_json,
             'grades': self.grades_2_list()
         }
