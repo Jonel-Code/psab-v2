@@ -264,7 +264,7 @@ class OpenSubjectEnhance(Resource):
             return {'data': rz}, 200, {'Access-Control-Allow-Origin': '*'}
 
         if data['semester'] is None or data['year'] is None:
-            l = NewSemData.query.order_by(NewSemData.id.desc()).first()
+            l = NewSemData.get_current_semester()
             rv = {}
             if l is not None:
                 # ls = AvailableSubjectEnhance.query.filter_by(sys_year=sys).all()

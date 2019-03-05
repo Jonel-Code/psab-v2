@@ -101,8 +101,8 @@ class Subject(db.Model, SavableModel):
             'title': self.title,
             'pre_req': self.pre_requisite_codes,
             'units': self.units,
-            'semester': self.semester.value,
-            'year': self.year.value
+            'semester': self.semester.name,
+            'year': self.year.name
         }
 
 
@@ -328,6 +328,13 @@ class NewSemData(db.Model, SavableModel):
         db.session.commit()
 
     @staticmethod
+    def get_current_semester():
+        l = NewSemData.query.filter_by(is_current_semester=True).first()
+        if l is None:
+            l = NewSemData.latest_id()
+        return l
+
+    @staticmethod
     def latest_id():
         ls = NewSemData.query.order_by(NewSemData.id.desc()).first()
         return ls
@@ -345,7 +352,7 @@ class NewSemData(db.Model, SavableModel):
             s_l = [q.subject_code for q in s]
         rv = {
             'year': self.sys_year,
-            'semester': self.semester.value,
+            'semester': self.semester.name,
             'subjects': s_l
         }
         return rv
