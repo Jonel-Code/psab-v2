@@ -305,16 +305,16 @@ class NewSemData(db.Model, SavableModel):
     __tablename__ = 'newSemData'
 
     id = db.Column(db.Integer, primary_key=True)
-    sys_year = db.Column(db.Integer)
+    sys_year = db.Column(db.String(50))
     semester = db.Column(db.Enum(SemesterEnum))
     is_current_semester = db.Column(db.Boolean)
 
-    def __init__(self, sys_year: int, semester: SemesterEnum):
-        if not NewSemData.new_sem_is_unique(sys_year, semester):
+    def __init__(self, sys_year: str, semester: SemesterEnum):
+        if not NewSemData.new_sem_is_unique(sys_year.strip(), semester):
             raise Exception('duplicate Data Detected')
         l = NewSemData.latest_id()
         self.id = 0 if l is None else l.id + 1
-        self.sys_year = sys_year
+        self.sys_year = sys_year.strip()
         self.semester = semester
         self.use_as_current()
 
@@ -340,7 +340,7 @@ class NewSemData(db.Model, SavableModel):
         return ls
 
     @staticmethod
-    def new_sem_is_unique(sys_year: int, sem: SemesterEnum):
+    def new_sem_is_unique(sys_year: str, sem: SemesterEnum):
         rv = NewSemData.query.filter_by(sys_year=sys_year, semester=sem).first()
         print('rv', rv)
         return rv is None
@@ -349,7 +349,7 @@ class NewSemData(db.Model, SavableModel):
         s = AvailableSubjectEnhance.query.filter_by(new_sem_id=self.id).all()
         s_l = []
         if s is not None:
-            s_l = [q.subject_code for q in s]
+            s_l = [{'id': q.id, 'code': q.subject_code} for q in s]
         rv = {
             'year': self.sys_year,
             'semester': self.semester.name,
@@ -365,6 +365,13 @@ class NewSemData(db.Model, SavableModel):
             'activated': self.is_current_semester
         }
         return rv
+
+    def delete_sem_data(self):
+        s = AvailableSubjectEnhance.query.filter_by(new_sem_id=self.id).all()
+        for x in s:
+            x.delete_avail_sub()
+        NewSemData.query.filter_by(id=self.id).delete()
+        db.session.commit()
 
 
 class AvailableSubjectEnhance(db.Model, SavableModel):
@@ -415,3 +422,16 @@ class AvailableSubjectEnhance(db.Model, SavableModel):
             'semester': self.semester.value,
             'subject_code': self.subject_code
         }
+
+    def delete_avail_sub(self):
+        from core.models.Faculty import AdvisingData
+        AdvisingData.query.filter_by(available_subject_id=self.id).delete()
+        AvailableSubjectEnhance.query.filter_by(id=self.id).delete()
+        db.session.commit()
+
+# class AdvisingFormData(db.Model, SavableModel):
+#     __tablename__ = 'advisingFormData'
+#
+#     id = db.Column(db.Integer, primary_key=True)
+#     student_id = db.column(db.Integer)
+#     avail_subject_id = db.Column(db.Integer, db.ForeignKey('availableSubjectEnhance.id'))

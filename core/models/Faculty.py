@@ -1,6 +1,6 @@
 from deploy import db
 from core.models.GeneralData import Department
-from core.models.Subject import AvailableSubjects
+from core.models.Subject import AvailableSubjectEnhance
 from core.models.StudentData import StudentData
 from core.models.Extension import SavableModel
 import enum
@@ -40,13 +40,13 @@ class FacultyAccounts(db.Model, SavableModel):
         return d.name
 
 
-class AdvisingData(db.Model):
+class AdvisingData(db.Model, SavableModel):
     __tablename__ = 'advisingData'
 
     id = db.Column(db.Integer, primary_key=True)
-    available_subject_id = db.Column(db.Integer, db.ForeignKey('availableSubjects.id'))
+    available_subject_id = db.Column(db.Integer, db.ForeignKey('availableSubjectEnhance.id'))
     student_id = db.Column(db.Integer, db.ForeignKey('studentData.student_id'))
 
-    def __init__(self, available_subject: AvailableSubjects, student: StudentData):
+    def __init__(self, available_subject: AvailableSubjectEnhance, student: StudentData):
         self.available_subject_id = available_subject.id
         self.student_id = student.student_id

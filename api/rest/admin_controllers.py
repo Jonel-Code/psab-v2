@@ -269,6 +269,7 @@ class OpenSubjectEnhance(Resource):
             if l is not None:
                 # ls = AvailableSubjectEnhance.query.filter_by(sys_year=sys).all()
                 rv = l.to_json()
+                rv['semester_id'] = l.id
             return {'data': rv}, 200, {'Access-Control-Allow-Origin': '*'}
 
         from core.models.CurriculumEnums import SemesterEnum
@@ -334,19 +335,21 @@ class SemDataRemove(Resource):
         print('data', data)
         if _id is not None:
             print('data_id', _id)
-            lz = NewSemData.query.filter_by(id=_id).first()
+            lz: NewSemData = NewSemData.query.filter_by(id=_id).first()
             rz = []
             if lz is not None:
-                s = AvailableSubjectEnhance.query.filter_by(new_sem_id=lz.id).all()
-                rz = [z.subject_code for z in s]
-                AvailableSubjectEnhance.query.filter_by(new_sem_id=lz.id).delete()
-                # for q in s:
-                #     rz.append(q.subject_code)
-                #     q.delete()
-                NewSemData.query.filter_by(id=lz.id).delete()
+                # s = AvailableSubjectEnhance.query.filter_by(new_sem_id=lz.id).all()
+                # rz = [z.subject_code for z in s]
+                # AvailableSubjectEnhance.query.filter_by(new_sem_id=lz.id).delete()
+                # # for q in s:
+                # #     rz.append(q.subject_code)
+                # #     q.delete()
+                # NewSemData.query.filter_by(id=lz.id).delete()
+                lz.delete_sem_data()
                 db.session.commit()
                 lts = NewSemData.latest_id()
-                lts.use_as_current()
+                if lts is not None:
+                    lts.use_as_current()
             return {'data': {'removed': rz}}, 200, {'Access-Control-Allow-Origin': '*'}
 
 
@@ -663,3 +666,51 @@ class UploadStudentGrade(Resource):
             'errors': err_items
         }}
         return response_checker(True, rv, res_code=200)
+
+
+class SaveAdvisingForm(Resource):
+    def post(self):
+        req_params: list((str, bool)) = [
+            ('student_id', True),
+            ('semester_id', True),
+            ('content', True)
+        ]
+        data = quick_parse(req_params).parse_args()
+        import json
+        from core.models.Subject import AvailableSubjectEnhance, NewSemData
+        from core.models.Faculty import AdvisingData
+        from core.models.StudentData import StudentData
+        from deploy import db
+        content = json.loads(data['content'])
+        # _id = content['sem_id']
+        print('data', data)
+        print('content', content)
+        print('isinstance(content, list)', isinstance(content, list))
+        if isinstance(content, list):
+            try:
+                s_data: StudentData = StudentData.query.filter_by(student_id=int(data['student_id'])).first()
+                ns: NewSemData = NewSemData.query.filter_by(id=data['semester_id']).first()
+                old_opi: [AdvisingData] = AdvisingData.query.filter_by(student_id=int(data['student_id'])).all()
+                print('old_opi', old_opi)
+                print('sem_i', ns.id)
+                for z in old_opi:
+                    z_id: AvailableSubjectEnhance = AvailableSubjectEnhance.query.filter_by(
+                        id=z.available_subject_id).first()
+                    print('z_id.id', z_id.new_sem.id)
+                    if z_id.new_sem.id == ns.id:
+                        AdvisingData.query.filter_by(id=z.id).delete()
+                        db.session.commit()
+
+                for c in content:
+                    opi: AvailableSubjectEnhance = AvailableSubjectEnhance.query.filter_by(id=c).first()
+                    if opi is not None and s_data is not None:
+                        new_data = AdvisingData(opi, s_data)
+                        new_data.save()
+
+            except Exception as e:
+                print('error', e)
+                response_checker(True, {'error': 'server error'}, res_code=500)
+
+            return response_checker(True, {'message': 'finished'}, res_code=200)
+        else:
+            return response_checker(True, {'error': 'forbidden'}, res_code=403)
