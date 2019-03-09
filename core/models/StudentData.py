@@ -26,6 +26,7 @@ def nearest_curriculum(student_id: str, course_id: int, year_prefix: str):
     print('y', y)
     print('loe', loe)
     cur_year = str(max(loe) if len(loe) > 0 else max(y))
+    print('cur_year', cur_year)
     cur = Curriculum.query.filter_by(course_id=course_id, year=str(cur_year)).all()
     latest_cur_id = max([x.id for x in cur])
     return Curriculum.query.filter_by(id=latest_cur_id).first()
