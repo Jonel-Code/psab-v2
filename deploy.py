@@ -1,4 +1,5 @@
-from flask import Flask
+import os
+from flask import Flask, send_file, request, make_response
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
@@ -20,9 +21,31 @@ def create_app(env_config):
 config_name = 'development'
 # config_name = 'production'
 
+JRXML_BASE_DIR = os.path.dirname(os.path.abspath(__file__)) + \
+                 '\\reports\\jrxml\\'
+OUTPUT_BASE_DIR = os.path.dirname(os.path.abspath(__file__)) + \
+                  '/reports/output/'
+REPORT_RESOURCES = os.path.dirname(os.path.abspath(__file__)) + \
+                   '/resources/'
+REPORT_EFF_EXPIRATION_DAYS = 30
+
 app = create_app(config_name)
 api = Api(app)
 db = SQLAlchemy(app)
+
+
+@app.route('/get_report_resource')
+def get_image():
+    try:
+        filename = REPORT_RESOURCES + request.args.get('name')
+        print('filename', filename)
+        print('host', request.url_root)
+        if not os.path.isfile(filename):
+            return make_response('<h1>404 not found<h1>', 404)
+        return send_file(filename, mimetype='image/jpg')
+    except Exception:
+        return make_response('<h1>Server Error<h1>', 500)
+
 
 api.add_resource(EnhancedStudentLogin, '/new-login')
 
@@ -63,11 +86,15 @@ api.add_resource(TestCall, '/test')
 
 api.add_resource(OpenSubjectEnhance, '/open-subject-enhance')
 
-from api.rest.admin_controllers import SemDataListing, SemDataRemove, SemDataActivate
+from api.rest.admin_controllers import SemDataListing, SemDataRemove, SemDataActivate, SaveAdvisingForm
+from api.rest.reports_controller import AdvisingForm
 
 api.add_resource(SemDataListing, '/sem-data-listing')
 api.add_resource(SemDataRemove, '/sem-data-remove')
 api.add_resource(SemDataActivate, '/sem-data-activate')
+
+api.add_resource(AdvisingForm, '/advising_form')
+api.add_resource(SaveAdvisingForm, '/save_advising_data')
 # SemDataRemove
 
 if __name__ == '__main__':
