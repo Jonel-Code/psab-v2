@@ -15,7 +15,7 @@ def create_app(env_config):
     __app = Flask(__name__, instance_relative_config=True)
     __app.config.from_object(app_config[env_config])
     __app.config.from_pyfile('config.py')
-    return __app
+    return __app, app_config[env_config]
 
 
 config_name = 'development'
@@ -29,7 +29,9 @@ REPORT_RESOURCES = os.path.dirname(os.path.abspath(__file__)) + \
                    '/resources/'
 REPORT_EFF_EXPIRATION_DAYS = 30
 
-app = create_app(config_name)
+APP_DIR = os.path.dirname(__file__)
+
+app, config = create_app(config_name)
 api = Api(app)
 db = SQLAlchemy(app)
 

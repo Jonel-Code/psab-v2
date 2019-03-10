@@ -5,6 +5,9 @@ class Config(object):
     """
     Common configurations
     """
+    REPORTS_DIR = '/reports'
+    REPORTS_JRXML_DIR = REPORTS_DIR + '/jrxml'
+    REPORTS_OUTPUT_DIR = REPORTS_DIR + '/output'
 
     # Put any configurations here that are common across all environments
 
