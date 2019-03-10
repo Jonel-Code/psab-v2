@@ -106,7 +106,7 @@
 	<title>
 		<band height="201">
 			<staticText>
-				<reportElement x="360" y="0" width="80" height="14" uuid="4ba0a104-ef5a-4426-b18d-1ff28abacd82"/>
+				<reportElement x="360" y="0" width="90" height="14" uuid="4ba0a104-ef5a-4426-b18d-1ff28abacd82"/>
 				<text><![CDATA[Transaction No.:]]></text>
 			</staticText>
 			<frame>
