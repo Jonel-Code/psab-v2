@@ -85,16 +85,16 @@ class AdvisingForm(Resource):
             return response_checker(True, {'error': 'data not found'}, res_code=404)
         n = datetime.datetime.now().date() + datetime.timedelta(days=REPORT_EFF_EXPIRATION_DAYS)
         data['api_resource_url'] = request.url_root
-        data['effectivity_date'] = str(n.strftime('%B %d %Y'))
+        data['effectivity_date'] = str(n.strftime('%B %d %Y')).title()
         data['academic_year'] = str(sem_data.sys_year)
         data['semester'] = str(se.index(sem_data.semester.value))
-        data['student_name'] = str(stud.student_full_name)
+        data['student_name'] = str(stud.student_full_name).title()
         to_add_content = [{}]
         d_cont = json.loads(data['subjects_content'])
         if isinstance(d_cont, list):
             for s in d_cont:
                 to_add_content.append({
-                    "subject": s['subject'],
+                    "subject": str(s['subject']).title(),
                     "units": s['units']
                 })
 

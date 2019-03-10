@@ -312,11 +312,11 @@
 			<frame>
 				<reportElement x="1" y="137" width="568" height="59" uuid="05a9bfd5-5cc1-4bc9-8e3b-b5a13f0da296"/>
 				<textField>
-					<reportElement x="79" y="0" width="280" height="30" uuid="4c8f3891-0e2f-4dc8-ad50-22352709e464"/>
+					<reportElement x="90" y="0" width="268" height="30" uuid="4c8f3891-0e2f-4dc8-ad50-22352709e464"/>
 					<box>
 						<bottomPen lineWidth="1.0"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom"/>
 					<textFieldExpression><![CDATA[$P{student_name}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -324,14 +324,14 @@
 					<box>
 						<bottomPen lineWidth="1.0"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
 						<paragraph lineSpacing="Proportional" leftIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{student_id}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="0" y="0" width="79" height="30" uuid="69008f6e-f57f-4037-a3a1-34d133a428ff"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<reportElement x="0" y="0" width="90" height="30" uuid="69008f6e-f57f-4037-a3a1-34d133a428ff"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="Serif" size="10" isBold="true"/>
 						<paragraph leftIndent="0"/>
 					</textElement>
@@ -339,7 +339,7 @@
 				</staticText>
 				<staticText>
 					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="359" y="0" width="100" height="30" uuid="321531cf-4bbf-4fdf-8f26-f88763897821"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="Serif" size="10" isBold="true"/>
 						<paragraph lineSpacing="Single" leftIndent="5" rightIndent="5"/>
 					</textElement>
@@ -347,7 +347,7 @@
 				</staticText>
 				<staticText>
 					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="359" y="30" width="100" height="30" uuid="dfaab027-37c5-44e6-aeb4-501c823faade"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="Serif" size="10" isBold="true"/>
 						<paragraph lineSpacing="Single" leftIndent="5" rightIndent="5"/>
 					</textElement>
@@ -358,7 +358,7 @@
 					<box>
 						<bottomPen lineWidth="1.0"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
 						<paragraph lineSpacing="Proportional" leftIndent="2"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{academic_year}]]></textFieldExpression>
