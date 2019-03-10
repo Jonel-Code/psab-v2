@@ -65,11 +65,17 @@ class AdvisingForm(Resource):
         from core.models.StudentData import StudentData
         import datetime
         import json
+        from flask import request
+        from deploy import config, APP_DIR
         fname = 'advising_form'
         global input_file
-        input_file = JRXML_BASE_DIR + fname + '.jrxml'
+        ad = APP_DIR
+        input_file = APP_DIR + config.REPORTS_JRXML_DIR + '/' + fname + '.jrxml'
         # reset_input_file(_input_file)
         print('input_file', input_file)
+        print('APP_DIR', APP_DIR)
+        print('config.REPORTS_JRXML_DIR', config.REPORTS_JRXML_DIR)
+        print('config.REPORTS_OUTPUT_DIR', config.REPORTS_OUTPUT_DIR)
         se = SemesterEnum.to_list()
 
         data = quick_parse(req_params).parse_args()
@@ -96,9 +102,11 @@ class AdvisingForm(Resource):
             "content": to_add_content
         }
         parameters = filter_parameters(data)
+        print('parameters', parameters)
 
         try:
-            with tempfile.TemporaryDirectory(dir=OUTPUT_BASE_DIR) as directory:
+            with tempfile.TemporaryDirectory(dir=APP_DIR + config.REPORTS_OUTPUT_DIR) as directory:
+                print('directory', directory)
                 tfile = tempfile.NamedTemporaryFile(
                     prefix=data['student_id'],
                     suffix='.json',
