@@ -303,7 +303,7 @@ class OpenSubjectEnhance(Resource):
             return response_checker(True, {'error': 'there is an error creating new Semester Data'}, res_code=500)
         errs = []
         for x in content['subject_code']:
-            sc = str(x)
+            sc = str(x).lower()
             try:
                 added = AvailableSubjectEnhance(ns, subject_code=sc)
                 added.save()
@@ -673,9 +673,16 @@ class SaveAdvisingForm(Resource):
         req_params: list((str, bool)) = [
             ('student_id', True),
             ('semester_id', True),
-            ('content', True)
+            ('content', True),
+            ('is_block_section', False)
         ]
         data = quick_parse(req_params).parse_args()
+        is_block_section = data['is_block_section']
+        if is_block_section is None:
+            is_block_section = False
+        else:
+            is_block_section = True if str(is_block_section).lower() == 'true' else False
+        print('is_block_section', is_block_section)
         import json
         from core.models.Subject import AvailableSubjectEnhance, NewSemData
         from core.models.Faculty import AdvisingData
@@ -700,9 +707,15 @@ class SaveAdvisingForm(Resource):
                     if z_id.new_sem.id == ns.id:
                         AdvisingData.query.filter_by(id=z.id).delete()
                         db.session.commit()
-
                 for c in content:
-                    opi: AvailableSubjectEnhance = AvailableSubjectEnhance.query.filter_by(id=c).first()
+                    opi: AvailableSubjectEnhance = AvailableSubjectEnhance \
+                        .query.filter_by(id=c) \
+                        .first() if not \
+                        is_block_section else \
+                        AvailableSubjectEnhance.query.filter_by(subject_code=c, new_sem_id=ns.id).first()
+                    if opi is None and is_block_section:
+                        opi = AvailableSubjectEnhance(ns, c)
+                        opi.save()
                     if opi is not None and s_data is not None:
                         new_data = AdvisingData(opi, s_data)
                         new_data.save()

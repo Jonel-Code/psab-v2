@@ -99,5 +99,9 @@ api.add_resource(AdvisingForm, '/advising_form')
 api.add_resource(SaveAdvisingForm, '/save_advising_data')
 # SemDataRemove
 
+from api.rest.advising_controllers import AdvisingStats
+api.add_resource(AdvisingStats, '/advising-stats')
+
+
 if __name__ == '__main__':
     app.run()
