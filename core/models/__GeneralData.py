@@ -1,15 +1,12 @@
-# from deploy import db
-# from core.models.Extension import SavableModel
-from sqlalchemy import Column, Integer, String, Boolean, Enum, ForeignKey
-from sqlalchemy.orm import relationship, backref
-from main_db import Base, SavableModel, db_engine, db_session
+from deploy import db
+from core.models.Extension import SavableModel
 
 
-class Department(Base, SavableModel):
+class Department(db.Model, SavableModel):
     __tablename__ = 'department'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(256))
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256))
 
     def __init__(self, name: str):
         self.name = name.lower()
@@ -30,13 +27,13 @@ class Department(Base, SavableModel):
         }
 
 
-class Course(Base, SavableModel):
+class Course(db.Model, SavableModel):
     __tablename__ = 'course'
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String(256), unique=True)
-    department_id = Column(Integer)
-    # department_id = Column(Integer, ForeignKey('department.id'))
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(256), unique=True)
+    department_id = db.Column(db.Integer)
+    # department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
 
     def __init__(self, title: str, department: Department):
         self.title = title.lower()

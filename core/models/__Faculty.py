@@ -1,13 +1,9 @@
-# from deploy import db
+from deploy import db
 from core.models.GeneralData import Department
 from core.models.Subject import AvailableSubjectEnhance
 from core.models.StudentData import StudentData
-# from core.models.Extension import SavableModel
+from core.models.Extension import SavableModel
 import enum
-
-from sqlalchemy import Column, Integer, String, Boolean, Enum, ForeignKey
-from sqlalchemy.orm import relationship, backref
-from main_db import Base, SavableModel, db_engine, db_session
 
 
 class AccountType(enum.Enum):
@@ -19,15 +15,15 @@ class AccountType(enum.Enum):
         return s in [x.value for x in AccountType]
 
 
-class FacultyAccounts(Base, SavableModel):
+class FacultyAccounts(db.Model, SavableModel):
     __tablename__ = 'facultyAccounts'
 
-    id = Column(Integer, primary_key=True)
-    department_id = Column(Integer)
-    # department_id = Column(Integer, ForeignKey('department.id'))
-    account_name = Column(String(256), unique=True)
-    account_password = Column(String(256))
-    account_type = Column(Enum(AccountType))
+    id = db.Column(db.Integer, primary_key=True)
+    department_id = db.Column(db.Integer)
+    # department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
+    account_name = db.Column(db.String(256), unique=True)
+    account_password = db.Column(db.String(256))
+    account_type = db.Column(db.Enum(AccountType))
 
     def __init__(self,
                  account_name: str,
@@ -45,14 +41,14 @@ class FacultyAccounts(Base, SavableModel):
         return d.name
 
 
-class AdvisingData(Base, SavableModel):
+class AdvisingData(db.Model, SavableModel):
     __tablename__ = 'advisingData'
 
-    id = Column(Integer, primary_key=True)
-    available_subject_id = Column(Integer)
-    # available_subject_id = Column(Integer, ForeignKey('availableSubjectEnhance.id'))
-    student_id = Column(Integer)
-    # student_id = Column(Integer, ForeignKey('studentData.student_id'))
+    id = db.Column(db.Integer, primary_key=True)
+    available_subject_id = db.Column(db.Integer)
+    # available_subject_id = db.Column(db.Integer, db.ForeignKey('availableSubjectEnhance.id'))
+    student_id = db.Column(db.Integer)
+    # student_id = db.Column(db.Integer, db.ForeignKey('studentData.student_id'))
 
     def __init__(self, available_subject: AvailableSubjectEnhance, student: StudentData):
         self.available_subject_id = available_subject.id

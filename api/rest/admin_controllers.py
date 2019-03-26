@@ -9,7 +9,7 @@ def get_curriculum(id_v: int):
     return c
 
 
-def new_subject(data):
+def new_subject(data, commit=True):
     curriculum_id = 'curriculum_id'
     code = 'code'
     title = 'title'
@@ -50,7 +50,7 @@ def new_subject(data):
         )
         ch = c.search_subject(s.code)
         if ch is None:
-            c.add_a_subject(s)
+            c.add_a_subject(s, commit=commit)
             res_code = 200
 
         rv = {
@@ -329,7 +329,8 @@ class SemDataRemove(Resource):
         ]
         data = quick_parse(req_params).parse_args()
         import json
-        from core.models.Subject import AvailableSubjectEnhance, NewSemData, db
+        from core.models.Subject import AvailableSubjectEnhance, NewSemData
+        from main_db import db_session
         content = json.loads(data['content'])
         _id = content['sem_id']
         print('data', data)
@@ -346,7 +347,7 @@ class SemDataRemove(Resource):
                 # #     q.delete()
                 # NewSemData.query.filter_by(id=lz.id).delete()
                 lz.delete_sem_data()
-                db.session.commit()
+                db_session.commit()
                 lts = NewSemData.latest_id()
                 if lts is not None:
                     lts.use_as_current()
@@ -493,7 +494,7 @@ class BulkSubjectUpload(Resource):
                     }
                     if 'pre_req' in x_keys:
                         _2_add['pre_req'] = str(x['pre_req']).replace(' ', '').lower()
-                    rv, n, a = new_subject(_2_add)
+                    rv, n, a = new_subject(_2_add, commit=False)
                     if isinstance(n, int):
                         if n != 200:
                             _2_add['error'] = {
@@ -501,6 +502,8 @@ class BulkSubjectUpload(Resource):
                                 'note': rv['note']
                             }
                             errors.append(_2_add)
+            from main_db import db_session
+            db_session.commit()
         rv = {
             'response': {
                 'errors': errors
@@ -520,10 +523,11 @@ class DeleteCurriculum(Resource):
         cid = data[curriculum_id]
         msg = 'deleted'
         r_num = 200
-        from core.models.Subject import Curriculum, CurriculumSubjects, db
+        from core.models.Subject import Curriculum, CurriculumSubjects
+        from main_db import db_session
         Curriculum.query.filter_by(id=cid).delete()
         CurriculumSubjects.query.filter_by(curriculum_id=cid).delete()
-        db.session.commit()
+        db_session.commit()
         # try:
         #
         # except Exception as e:
@@ -544,9 +548,10 @@ class DeleteStudentData(Resource):
         msg = 'deleted'
         r_num = 200
         try:
-            from core.models.StudentData import StudentData, db
+            from core.models.StudentData import StudentData
+            from main_db import db_session
             StudentData.query.filter_by(student_id=sid).delete()
-            db.session.commit()
+            db_session.commit()
         except Exception as e:
             msg = e
             r_num = 500
@@ -591,24 +596,32 @@ class UploadStudentData(Resource):
                 # if es is None:
                 #     continue
 
-                z = StudentData.search_student(s_id)
-                if z is not None:
-                    continue
-                _s_c = Course.find_course_title(s_c)
+                _s_c: Course = Course.find_course_title(s_c)
                 if _s_c is None:
+                    continue
+
+                z: StudentData = StudentData.search_student(s_id)
+                if z is not None:
+                    z.full_name = s_fn
+                    z.course_id = _s_c.id
+                    z.year = YearEnum(str(s_y).lower())
+                    z.save(do_commit=False)
                     continue
 
                 z: StudentData = StudentData(int(s_id),
                                              str(s_fn).strip(),
                                              _s_c,
                                              YearEnum(str(s_y).lower()))
-                z.save()
+                z.save(do_commit=False)
                 uploaded.append(z.student_id)
                 del err_items[-1]
+            from main_db import db_session
+            db_session.commit()
         rv = {'response': {
             'uploaded': uploaded,
             'errors': err_items
         }}
+
         return response_checker(True, rv, res_code=200)
 
 
@@ -624,7 +637,8 @@ class UploadStudentGrade(Resource):
         err_items = []
         uploaded = []
         updated = []
-        from core.models.StudentData import StudentGrades, db
+        from core.models.StudentData import StudentGrades
+        from main_db import db_session
 
         def req_ok(r_f):
             for r in r_f:
@@ -658,7 +672,7 @@ class UploadStudentGrade(Resource):
                         {'student_id': sg_c.student_id, 'subject_code': sg_c.subject_code, 'grade': sg_c.grade}
                     )
                     del err_items[-1]
-                    db.session.commit()
+                    db_session.commit()
 
         rv = {'response': {
             'uploaded': uploaded,
@@ -687,7 +701,7 @@ class SaveAdvisingForm(Resource):
         from core.models.Subject import AvailableSubjectEnhance, NewSemData
         from core.models.Faculty import AdvisingData
         from core.models.StudentData import StudentData
-        from deploy import db
+        from main_db import db_session
         content = json.loads(data['content'])
         # _id = content['sem_id']
         print('data', data)
@@ -706,7 +720,7 @@ class SaveAdvisingForm(Resource):
                     print('z_id.id', z_id.new_sem.id)
                     if z_id.new_sem.id == ns.id:
                         AdvisingData.query.filter_by(id=z.id).delete()
-                        db.session.commit()
+                        db_session.commit()
                 for c in content:
                     opi: AvailableSubjectEnhance = AvailableSubjectEnhance \
                         .query.filter_by(id=c) \

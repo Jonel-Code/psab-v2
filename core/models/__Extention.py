@@ -1,13 +1,13 @@
-from main_db import db_session
+from deploy import db
 
 
 class SavableModel:
     def save(self, do_commit=True):
         from sqlalchemy import exc
         try:
-            db_session.add(self)
+            db.session.add(self)
             if do_commit:
-                db_session.commit()
+                db.session.commit()
             # db.session.close()
             return self
         except exc.IntegrityError:
