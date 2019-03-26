@@ -596,24 +596,32 @@ class UploadStudentData(Resource):
                 # if es is None:
                 #     continue
 
-                z = StudentData.search_student(s_id)
-                if z is not None:
-                    continue
-                _s_c = Course.find_course_title(s_c)
+                _s_c: Course = Course.find_course_title(s_c)
                 if _s_c is None:
+                    continue
+
+                z: StudentData = StudentData.search_student(s_id)
+                if z is not None:
+                    z.full_name = s_fn
+                    z.course_id = _s_c.id
+                    z.year = YearEnum(str(s_y).lower())
+                    z.save(do_commit=False)
                     continue
 
                 z: StudentData = StudentData(int(s_id),
                                              str(s_fn).strip(),
                                              _s_c,
                                              YearEnum(str(s_y).lower()))
-                z.save()
+                z.save(do_commit=False)
                 uploaded.append(z.student_id)
                 del err_items[-1]
+            from main_db import db_session
+            db_session.commit()
         rv = {'response': {
             'uploaded': uploaded,
             'errors': err_items
         }}
+
         return response_checker(True, rv, res_code=200)
 
 
