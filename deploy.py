@@ -1,14 +1,18 @@
 import os
 from flask import Flask, send_file, request, make_response
 from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
+
+from general_config import config_name
 
 from instance.config import app_config
 from api.rest import StudentLogin, AdminLogin, FacultyAccountCreate, NewCurriculumData, CurriculumData, \
     AddSubjectToCurriculum, StudentCurriculum, OpenSubject, DepartmentListing, DepartmentNew, GetDepartmentCurriculum, \
     BulkSubjectUpload, DeleteCurriculum, UploadStudentData, DeleteStudentData, UploadStudentGrade, EnhancedStudentLogin, \
     OpenSubjectEnhance
-from api.rest.TestData import TestCall
+# from api.rest.TestData import TestCall
+
+from main_db import db_session
 
 
 def create_app(env_config):
@@ -18,7 +22,6 @@ def create_app(env_config):
     return __app, app_config[env_config]
 
 
-config_name = 'development'
 # config_name = 'production'
 
 JRXML_BASE_DIR = os.path.dirname(os.path.abspath(__file__)) + \
@@ -33,7 +36,14 @@ APP_DIR = os.path.dirname(__file__)
 
 app, config = create_app(config_name)
 api = Api(app)
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
+# db = db_session
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    # app.run()
+    db_session.remove()
 
 
 @app.route('/get_report_resource')
@@ -84,7 +94,7 @@ api.add_resource(DeleteStudentData, '/student/delete-data')
 
 api.add_resource(UploadStudentGrade, '/student/upload-grade')
 
-api.add_resource(TestCall, '/test')
+# api.add_resource(TestCall, '/test')
 
 api.add_resource(OpenSubjectEnhance, '/open-subject-enhance')
 
@@ -100,8 +110,8 @@ api.add_resource(SaveAdvisingForm, '/save_advising_data')
 # SemDataRemove
 
 from api.rest.advising_controllers import AdvisingStats
-api.add_resource(AdvisingStats, '/advising-stats')
 
+api.add_resource(AdvisingStats, '/advising-stats')
 
 if __name__ == '__main__':
     app.run()

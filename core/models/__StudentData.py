@@ -1,14 +1,9 @@
-# from enum import Enum
+from enum import Enum
 
-# from deploy import db
+from deploy import db
 from core.models.CurriculumEnums import YearEnum
 from core.models.GeneralData import Course
-# from core.models.Extension import SavableModel
-
-from sqlalchemy import Column, Integer, String, Boolean, Enum, ForeignKey, Float
-from sqlalchemy.orm import relationship, backref
-from main_db import Base, SavableModel, db_engine, db_session
-
+from core.models.Extension import SavableModel
 
 MIN_PASSED_GRADE = 3.0
 MAX_PASSED_GRADE = 0.01
@@ -42,14 +37,14 @@ class StatusEnum(Enum):
     irregular = 'irregular'
 
 
-class StudentData(Base, SavableModel):
+class StudentData(db.Model, SavableModel):
     __tablename__ = 'studentData'
 
-    student_id = Column(Integer, primary_key=True)
-    full_name = Column(String(256))
-    course_id = Column(Integer)
-    # course_id = Column(Integer, ForeignKey('course.id'))
-    year = Column(Enum(YearEnum))
+    student_id = db.Column(db.Integer, primary_key=True)
+    full_name = db.Column(db.String(256))
+    course_id = db.Column(db.Integer)
+    # course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+    year = db.Column(db.Enum(YearEnum))
 
     def __init__(self,
                  student_id: int,
@@ -120,14 +115,14 @@ class StudentData(Base, SavableModel):
         return StudentData.query.filter_by(student_id=int(sid)).first()
 
 
-class StudentGrades(Base, SavableModel):
+class StudentGrades(db.Model, SavableModel):
     __tablename__ = 'studentGrades'
 
-    id = Column(Integer, primary_key=True)
-    student_id = Column(Integer)
-    # student_id = Column(Integer, ForeignKey('studentData.student_id'))
-    subject_code = Column(String(60))
-    grade = Column(Float)
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer)
+    # student_id = db.Column(db.Integer, db.ForeignKey('studentData.student_id'))
+    subject_code = db.Column(db.String(60))
+    grade = db.Column(db.Float)
 
     def __init__(self,
                  student_id: int,

@@ -1,22 +1,21 @@
-# from deploy import db, config
+from deploy import db, config
 from core.models.CurriculumEnums import YearEnum, SemesterEnum
 from core.models.GeneralData import Course, Department
-# from core.models.Extension import SavableModel
-from sqlalchemy import Column, Integer, String, Boolean, Enum, ForeignKey
-from sqlalchemy.orm import relationship, backref
-from main_db import Base, SavableModel, db_engine, db_session
+from core.models.Extension import SavableModel
+from sqlalchemy import Column, Integer, String
+from main_db import Base
 
 
-class Subject(Base, SavableModel):
+class Subject(db.Model, SavableModel):
     __tablename__ = 'subject'
 
-    id = Column(Integer, primary_key=True)
-    code = Column(String(60))
-    title = Column(String(256))
-    pre_req = Column(String(256))
-    year = Column(Enum(YearEnum))
-    semester = Column(Enum(SemesterEnum))
-    units = Column(Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(60))
+    title = db.Column(db.String(256))
+    pre_req = db.Column(db.String(256))
+    year = db.Column(db.Enum(YearEnum))
+    semester = db.Column(db.Enum(SemesterEnum))
+    units = db.Column(db.Integer)
 
     def __init__(self,
                  code: str,
@@ -109,15 +108,15 @@ class Subject(Base, SavableModel):
         }
 
 
-class Curriculum(Base, SavableModel):
+class Curriculum(db.Model, SavableModel):
     __tablename__ = 'curriculum'
 
-    id = Column(Integer, primary_key=True)
-    year = Column(String(60))
-    description = Column(String(256))
-    course_id = Column(Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.String(60))
+    description = db.Column(db.String(256))
+    course_id = db.Column(db.Integer)
 
-    # course_id = Column(Integer, ForeignKey('course.id'))
+    # course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
 
     def __init__(self,
                  year: str,
@@ -135,7 +134,7 @@ class Curriculum(Base, SavableModel):
     def search_subject(self, subject_code: str):
         # x: Subject = None
         # x = CurriculumSubjects.query.filter_by(curriculum_id=self.id, code=subject_code).first()
-        y = db_engine.execute(f"""
+        y = db.engine.execute(f"""
         select *
         from "curriculumSubjects"
         inner join subject s2 on "curriculumSubjects".subject_id = s2.id        
@@ -163,7 +162,7 @@ class Curriculum(Base, SavableModel):
         c_id = self.id
         s_id = subj.id
         CurriculumSubjects.query.filter_by(curriculum_id=c_id, subject_id=s_id).delete()
-        db_session.commit()
+        db.session.commit()
 
     @staticmethod
     def search_curriculum(id_value: int):
@@ -202,17 +201,17 @@ class Curriculum(Base, SavableModel):
         }
 
 
-class CurriculumSubjects(Base, SavableModel):
+class CurriculumSubjects(db.Model, SavableModel):
     __tablename__ = 'curriculumSubjects'
 
-    id = Column(Integer, primary_key=True)
-    curriculum_id = Column(Integer)
-    # curriculum_id = Column(Integer, ForeignKey('curriculum.id'))
-    # subject_id = Column(Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    curriculum_id = db.Column(db.Integer)
+    # curriculum_id = db.Column(db.Integer, db.ForeignKey('curriculum.id'))
+    # subject_id = db.Column(db.Integer)
 
-    subject_id = Column(Integer, ForeignKey('subject.id'))
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'))
 
-    subject = relationship('Subject', backref=backref("subject", lazy=True))
+    subject = db.relationship('Subject', backref=db.backref("subject", lazy=True))
 
     def __init__(self, curriculum: Curriculum, subject: Subject):
         self.curriculum_id = curriculum.id
@@ -229,20 +228,20 @@ class CurriculumSubjects(Base, SavableModel):
                 CurriculumSubjects.query.filter_by(id=cur_subj.id).delete()
             except Exception as e:
                 print('error:', e)
-        db_session.commit()
+        db.session.commit()
 
 
-class AvailableSubjects(Base, SavableModel):
+class AvailableSubjects(db.Model, SavableModel):
     __tablename__ = 'availableSubjects'
 
-    id = Column(Integer, primary_key=True)
-    sys_year = Column(Integer)
-    semester = Column(Enum(SemesterEnum))
-    subject_id = Column(Integer)
-    # subject_id = Column(Integer, ForeignKey('subject.id'))
-    department_id = Column(Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    sys_year = db.Column(db.Integer)
+    semester = db.Column(db.Enum(SemesterEnum))
+    subject_id = db.Column(db.Integer)
+    # subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'))
+    department_id = db.Column(db.Integer)
 
-    # department_id = Column(Integer, ForeignKey('department.id'))
+    # department_id = db.Column(db.Integer, db.ForeignKey('department.id'))
 
     def __init__(self, sys_year: int, semester: SemesterEnum, subject: Subject, department: Department):
         self.sys_year = sys_year
@@ -264,10 +263,10 @@ class AvailableSubjects(Base, SavableModel):
         return [x.subject.code for x in subj]
 
 
-class SubjectClusters(Base, SavableModel):
+class SubjectClusters(db.Model, SavableModel):
     __tablename__ = 'subjectClusters'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(256), unique=True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256), unique=True)
 
     def __init__(self, name: str):
         self.name = name.lower()
@@ -284,13 +283,13 @@ class SubjectClusters(Base, SavableModel):
         return SubjectClusters.query.filter_by(name=n.lower()).first()
 
 
-class SubjectEquivalents(Base, SavableModel):
+class SubjectEquivalents(db.Model, SavableModel):
     __tablename__ = 'subjectEquivalents'
 
-    id = Column(Integer, primary_key=True)
-    cluster_id = Column(Integer)
-    # cluster_id = Column(Integer, ForeignKey('subjectClusters.id'))
-    subject_code = Column(String(60))
+    id = db.Column(db.Integer, primary_key=True)
+    cluster_id = db.Column(db.Integer)
+    # cluster_id = db.Column(db.Integer, db.ForeignKey('subjectClusters.id'))
+    subject_code = db.Column(db.String(60))
 
     def __init__(self, cluster: SubjectClusters, subject_code: str):
         self.cluster_id = cluster.id
@@ -327,13 +326,13 @@ class SubjectEquivalents(Base, SavableModel):
         return res
 
 
-class NewSemData(Base, SavableModel):
+class NewSemData(db.Model, SavableModel):
     __tablename__ = 'newSemData'
 
-    id = Column(Integer, primary_key=True)
-    sys_year = Column(String(256))
-    semester = Column(Enum(SemesterEnum))
-    is_current_semester = Column(Boolean)
+    id = db.Column(db.Integer, primary_key=True)
+    sys_year = db.Column(db.String(256))
+    semester = db.Column(db.Enum(SemesterEnum))
+    is_current_semester = db.Column(db.Boolean)
 
     def __init__(self, sys_year: str, semester: SemesterEnum):
         if not NewSemData.new_sem_is_unique(sys_year.strip(), semester):
@@ -351,7 +350,7 @@ class NewSemData(Base, SavableModel):
                 x.is_current_semester = True
                 continue
             x.is_current_semester = False
-        db_session.commit()
+        db.session.commit()
 
     @staticmethod
     def get_current_semester():
@@ -397,18 +396,18 @@ class NewSemData(Base, SavableModel):
         for x in s:
             x.delete_avail_sub()
         NewSemData.query.filter_by(id=self.id).delete()
-        db_session.commit()
+        db.session.commit()
 
 
-class AvailableSubjectEnhance(Base, SavableModel):
+class AvailableSubjectEnhance(db.Model, SavableModel):
     __tablename__ = 'availableSubjectEnhance'
 
-    id = Column(Integer, primary_key=True)
-    # sys_year = Column(Integer)
-    # semester = Column(Enum(SemesterEnum))
-    new_sem_id = Column(Integer)
-    # new_sem_id = Column(Integer, ForeignKey('newSemData.id'))
-    subject_code = Column(String(60))
+    id = db.Column(db.Integer, primary_key=True)
+    # sys_year = db.Column(db.Integer)
+    # semester = db.Column(db.Enum(SemesterEnum))
+    new_sem_id = db.Column(db.Integer)
+    # new_sem_id = db.Column(db.Integer, db.ForeignKey('newSemData.id'))
+    subject_code = db.Column(db.String(60))
 
     def __init__(self, new_sem_data: NewSemData, subject_code: str):
         if not AvailableSubjectEnhance.is_unique(new_sem_data, subject_code):
@@ -454,7 +453,7 @@ class AvailableSubjectEnhance(Base, SavableModel):
         from core.models.Faculty import AdvisingData
         AdvisingData.query.filter_by(available_subject_id=self.id).delete()
         AvailableSubjectEnhance.query.filter_by(id=self.id).delete()
-        db_session.commit()
+        db.session.commit()
 
 # class AdvisingFormData(db.Model, SavableModel):
 #     __tablename__ = 'advisingFormData'
