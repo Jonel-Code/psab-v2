@@ -1,1 +1,1 @@
-web: gunicorn deploy:app
+web: gunicorn --worker-class socketio.sgunicorn.GeventSocketIOWorker --log-file=- deploy:app
