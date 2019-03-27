@@ -37,7 +37,7 @@ APP_DIR = os.path.dirname(__file__)
 
 app, config = create_app(config_name)
 api = Api(app)
-socketio = SocketIO(app, async_mode="threading")
+socketio = SocketIO(app)
 
 
 @socketio.on('connect', namespace='/advising')
@@ -50,23 +50,6 @@ def test_connect():
 def test_connect():
     # need visibility of the global thread object
     print('emitting new advising form submitted')
-
-
-@socketio.on('connect', namespace='/sockets')
-def test_connect():
-    # need visibility of the global thread object
-    print('Client connected')
-
-
-@socketio.on('my event', namespace='/advising')
-def handle_my_custom_event(json):
-    print('received json: ' + str(json))
-    socketio.emit('my response', {'reponse': 'my response'}, namespace='/advising')
-
-
-@socketio.on('message', namespace='/sockets')
-def handle_message(message):
-    print('received message: ' + message)
 
 
 from flask_restful import Resource
