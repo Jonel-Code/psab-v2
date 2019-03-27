@@ -361,7 +361,7 @@ class SemDataActivate(Resource):
         ]
         data = quick_parse(req_params).parse_args()
         import json
-        from core.models.Subject import AvailableSubjectEnhance, NewSemData, db
+        from core.models.Subject import AvailableSubjectEnhance, NewSemData
         content = json.loads(data['content'])
         _id = content['sem_id']
         print('data', data)
@@ -707,6 +707,7 @@ class SaveAdvisingForm(Resource):
         print('data', data)
         print('content', content)
         print('isinstance(content, list)', isinstance(content, list))
+        socket_rv = {}
         if isinstance(content, list):
             try:
                 s_data: StudentData = StudentData.query.filter_by(student_id=int(data['student_id'])).first()
@@ -714,6 +715,7 @@ class SaveAdvisingForm(Resource):
                 old_opi: [AdvisingData] = AdvisingData.query.filter_by(student_id=int(data['student_id'])).all()
                 print('old_opi', old_opi)
                 print('sem_i', ns.id)
+                rem_s_codes: [] = []
                 for z in old_opi:
                     z_id: AvailableSubjectEnhance = AvailableSubjectEnhance.query.filter_by(
                         id=z.available_subject_id).first()
@@ -721,6 +723,8 @@ class SaveAdvisingForm(Resource):
                     if z_id.new_sem.id == ns.id:
                         AdvisingData.query.filter_by(id=z.id).delete()
                         db_session.commit()
+                        rem_s_codes.append(z_id.subject_code)
+                s_codes: list = []
                 for c in content:
                     opi: AvailableSubjectEnhance = AvailableSubjectEnhance \
                         .query.filter_by(id=c) \
@@ -731,13 +735,18 @@ class SaveAdvisingForm(Resource):
                         opi = AvailableSubjectEnhance(ns, c)
                         opi.save()
                     if opi is not None and s_data is not None:
-                        new_data = AdvisingData(opi, s_data)
+                        new_data: AdvisingData = AdvisingData(opi, s_data)
                         new_data.save()
+                        s_codes.append(opi.subject_code)
 
+                from api.sockets import AdvisingConfigs, advising_socket_emit
+                socket_rv = {'content': {'removed': rem_s_codes, 'added': s_codes}}
+                # advising_socket_emit(AdvisingConfigs.new_advising_form_submitted, socket_rv)
+                # print('socket_rv', socket_rv)
             except Exception as e:
                 print('error', e)
                 response_checker(True, {'error': 'server error'}, res_code=500)
 
-            return response_checker(True, {'message': 'finished'}, res_code=200)
+            return response_checker(True, {'message': 'finished', 'data': socket_rv}, res_code=200)
         else:
             return response_checker(True, {'error': 'forbidden'}, res_code=403)

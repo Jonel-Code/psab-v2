@@ -2,6 +2,7 @@ import os
 from flask import Flask, send_file, request, make_response
 from flask_restful import Api
 # from flask_sqlalchemy import SQLAlchemy
+from flask_socketio import SocketIO, emit
 
 from general_config import config_name
 
@@ -36,6 +37,79 @@ APP_DIR = os.path.dirname(__file__)
 
 app, config = create_app(config_name)
 api = Api(app)
+socketio = SocketIO(app, async_mode="threading")
+
+
+@socketio.on('connect', namespace='/advising')
+def test_connect():
+    # need visibility of the global thread object
+    print('Client connected to advising')
+
+
+@socketio.on('new advising form submitted', namespace='/advising')
+def test_connect():
+    # need visibility of the global thread object
+    print('emitting new advising form submitted')
+
+
+@socketio.on('connect', namespace='/sockets')
+def test_connect():
+    # need visibility of the global thread object
+    print('Client connected')
+
+
+@socketio.on('my event', namespace='/advising')
+def handle_my_custom_event(json):
+    print('received json: ' + str(json))
+    socketio.emit('my response', {'reponse': 'my response'}, namespace='/advising')
+
+
+@socketio.on('message', namespace='/sockets')
+def handle_message(message):
+    print('received message: ' + message)
+
+
+from flask_restful import Resource
+
+
+class AdvisingDataEmitter(Resource):
+    def post(self):
+        req_params: list((str, bool)) = [
+            ('content', False)
+        ]
+        print('fired AdvisingDataEmitter')
+        from api.rest.quick_parser import quick_parse
+        data = quick_parse(req_params).parse_args()
+        to_emit = {}
+        if not data['content'] == None:
+            import json
+            to_emit = json.loads(data['content'])
+        socketio.emit('new advising form submitted',
+                      {'data': to_emit},
+                      namespace='/advising')
+        # emit('test-emit', 'Change has been made', broadcast=True)
+        return {'fired': 'okay'}, 200, {'Access-Control-Allow-Origin': '*'}
+
+
+class Te(Resource):
+    def get(self):
+        req_params: list((str, bool)) = [
+            ('content', False)
+        ]
+        from api.rest.quick_parser import quick_parse
+        data = quick_parse(req_params).parse_args()
+        socketio.emit('my event',
+                      {'test': 'okay', 'passed': data['content']},
+                      namespace='/advising')
+        # emit('test-emit', 'Change has been made', broadcast=True)
+        print('fired')
+        return {'fired': 'okay'}, 200, {'Access-Control-Allow-Origin': '*'}
+
+
+# from api.sockets import AdvisingConfigs, advising_socket_emit
+#                 socket_rv = {'content': {'removed': rem_s_codes, 'added': s_codes}}
+#                 advising_socket_emit(AdvisingConfigs.new_advising_form_submitted, socket_rv)
+
 # db = SQLAlchemy(app)
 # db = db_session
 
@@ -58,6 +132,8 @@ def get_image():
     except Exception:
         return make_response('<h1>Server Error<h1>', 500)
 
+
+api.add_resource(Te, '/test/emmit')
 
 api.add_resource(EnhancedStudentLogin, '/new-login')
 
@@ -113,5 +189,8 @@ from api.rest.advising_controllers import AdvisingStats
 
 api.add_resource(AdvisingStats, '/advising-stats')
 
+api.add_resource(AdvisingDataEmitter, '/socket/advising-stats')
+
 if __name__ == '__main__':
     app.run()
+    socketio.run(app)
