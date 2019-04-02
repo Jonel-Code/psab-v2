@@ -9,7 +9,6 @@ from sqlalchemy import Column, Integer, String, Boolean, Enum, ForeignKey, Float
 from sqlalchemy.orm import relationship, backref
 from main_db import Base, SavableModel, db_engine, db_session
 
-
 MIN_PASSED_GRADE = 3.0
 MAX_PASSED_GRADE = 0.01
 
@@ -23,18 +22,54 @@ def nearest_curriculum(student_id: str, course_id: int, year_prefix: str):
     ys = Curriculum.query.filter_by(course_id=course_id).all()
     if ys is None:
         return None
-    y = [int(x.year) for x in ys]
-    e = str(student_id)[0:2]
-    year_entry = str(year_prefix + e + str(int(e) + 1))
-    loe = [x for x in y if x <= int(year_entry)]
-    print('year_entry', year_entry)
-    print('y', y)
-    print('loe', loe)
-    cur_year = str(max(loe) if len(loe) > 0 else max(y))
-    print('cur_year', cur_year)
-    cur = Curriculum.query.filter_by(course_id=course_id, year=str(cur_year)).all()
-    latest_cur_id = max([x.id for x in cur])
-    return Curriculum.query.filter_by(id=latest_cur_id).first()
+
+    try:
+        _cur = Curriculum.query.filter_by(course_id=course_id).all()
+        _latest_cur_id = max([x.id for x in _cur])
+        _cur_year = Curriculum.query.filter_by(id=_latest_cur_id).first().year
+        _y = [str(x.year).split('-') for x in ys]
+        _e = str(student_id)[0:2]
+        _year_entry = str(year_prefix + str(_e))
+        _curr_nearest: [] = str(_cur_year).split('-')
+        _cur_year = None
+        _nearest_dist_x = 999
+        print('_y', _y)
+        print('_year_entry', _year_entry)
+        _latest_by_year = None
+        for _i in _y:
+            _dist_x = abs(int(_year_entry) - int(_i[0]))
+            # _dist_y = abs(int(_year_entry) - int(_i[1]))
+            if int(_nearest_dist_x) > _dist_x and int(_i[0]) <= int(_year_entry):
+                _curr_nearest = _i
+                _cur_year = '-'.join([str(z) for z in _curr_nearest])
+                _nearest_dist_x = _dist_x
+            print('_i', _i)
+            print('_dist_x', _dist_x)
+            if _latest_by_year is None:
+                _latest_by_year = _i
+            else:
+                if _latest_by_year[0] < _i[0]:
+                    _latest_by_year = _i
+
+        if _cur_year is None:
+            _cur_year = '-'.join(_latest_by_year)
+
+        # y = [int(x.year) for x in ys]
+        # e = str(student_id)[0:2]
+        # year_entry = str(year_prefix + e + str(int(e) + 1))
+        # loe = [x for x in y if x <= int(year_entry)]
+        # print('year_entry', year_entry)
+        # print('y', y)
+        # print('loe', loe)
+        # cur_year = str(max(loe) if len(loe) > 0 else max(y))
+        cur_year = _cur_year
+        print('cur_year', cur_year)
+        cur = Curriculum.query.filter_by(course_id=course_id, year=str(cur_year)).all()
+        latest_cur_id = max([x.id for x in cur])
+        return Curriculum.query.filter_by(id=latest_cur_id).first()
+    except Exception as E:
+        print(E)
+        return None
 
 
 class StatusEnum(Enum):
