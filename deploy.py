@@ -36,6 +36,8 @@ APP_DIR = os.path.dirname(__file__)
 
 app, config = create_app(config_name)
 api = Api(app)
+
+
 # db = SQLAlchemy(app)
 # db = db_session
 
@@ -98,7 +100,8 @@ api.add_resource(UploadStudentGrade, '/student/upload-grade')
 
 api.add_resource(OpenSubjectEnhance, '/open-subject-enhance')
 
-from api.rest.admin_controllers import SemDataListing, SemDataRemove, SemDataActivate, SaveAdvisingForm
+from api.rest.admin_controllers import SemDataListing, SemDataRemove, SemDataActivate, SaveAdvisingForm, \
+    NewSubjectCluster
 from api.rest.reports_controller import AdvisingForm
 
 api.add_resource(SemDataListing, '/sem-data-listing')
@@ -109,9 +112,12 @@ api.add_resource(AdvisingForm, '/advising_form')
 api.add_resource(SaveAdvisingForm, '/save_advising_data')
 # SemDataRemove
 
+api.add_resource(NewSubjectCluster, '/upload-subject-cluster')
+
 from api.rest.advising_controllers import AdvisingStats
 
 api.add_resource(AdvisingStats, '/advising-stats')
+
 
 if __name__ == '__main__':
     app.run()

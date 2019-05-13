@@ -121,7 +121,15 @@ class StudentData(Base, SavableModel):
 
     @property
     def grades(self):
-        return StudentGrades.query.filter_by(student_id=self.student_id).all()
+        raw_grades: [StudentGrades] = StudentGrades.query.filter_by(student_id=self.student_id).all()
+        subject_codes = [x['subject_code'] for x in self.student_subjects]
+        from .Subject import SubjectClusters
+        for i, entry in enumerate(raw_grades):
+            e: StudentGrades = entry
+            checker = SubjectClusters.convert_item_from(e.subject_code, subject_codes)
+            if checker is not None:
+                raw_grades[i].subject_code = checker
+        return raw_grades
 
     @property
     def passed_subjects(self):
@@ -141,6 +149,7 @@ class StudentData(Base, SavableModel):
         ]
 
     def to_json(self):
+        print('self.grades_2_list()', self.grades_2_list())
         return {
             'id': self.student_id,
             'name': self.full_name,

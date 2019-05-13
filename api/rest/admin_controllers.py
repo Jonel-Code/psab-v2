@@ -361,7 +361,7 @@ class SemDataActivate(Resource):
         ]
         data = quick_parse(req_params).parse_args()
         import json
-        from core.models.Subject import AvailableSubjectEnhance, NewSemData, db
+        from core.models.Subject import AvailableSubjectEnhance, NewSemData
         content = json.loads(data['content'])
         _id = content['sem_id']
         print('data', data)
@@ -380,42 +380,54 @@ class SemDataActivate(Resource):
 
 class NewSubjectCluster(Resource):
     def get(self):
-        req_params: list((str, bool)) = [
-            ('name', True)
-        ]
-        data = quick_parse(req_params).parse_args()
+        # req_params: list((str, bool)) = [
+        #     ('name', True)
+        # ]
+        # data = quick_parse(req_params).parse_args()
 
         from core.models.Subject import SubjectClusters
 
-        s: SubjectClusters = SubjectClusters.search_cluster_name(data['name'])
+        s = SubjectClusters.get_all_in_json()
         if s is None:
             return response_checker(None, None, err_msg='not found', err_num=404)
-        rv = {'found': s.subjects_under}
-        return response_checker(True, rv)
+        rv = s
+        return response_checker(True, rv, res_code=200)
 
     def post(self):
         req_params: list((str, bool)) = [
-            ('name', True)
+            ('content', True)
         ]
         data = quick_parse(req_params).parse_args()
-        name = data['name']
-
         from core.models.Subject import SubjectClusters
-
-        s: SubjectClusters = SubjectClusters.search_cluster_name(name)
-        if s is not None:
-            return response_checker(None, None, 'duplicate subject cluster name', 404)
+        import json
+        content = json.loads(data['content'])
+        print('data-content', data['content'])
+        print('content', content)
         try:
-            ns = SubjectClusters(name=name)
-            ns.save()
-            rv = {
-                'message': f'successfully created subject cluster',
-                'id': ns.id,
-                'name': ns.name
-            }
+            if isinstance(content, list):
+                for row in content:
+                    if isinstance(row, list):
+                        SubjectClusters.new_subject_cluster_from_list(row)
+            return response_checker(True, {'message': 'okay'}, res_code=200)
         except Exception as e:
-            rv = {'message': e}
-        return response_checker(True, rv, err_msg=rv['message'], err_num=500)
+            print(e.with_traceback())
+            return response_checker(None, {}, err_msg='server error', err_num=500)
+
+        #
+        # s: SubjectClusters = SubjectClusters.search_cluster_name(name)
+        # if s is not None:
+        #     return response_checker(None, None, 'duplicate subject cluster name', 404)
+        # try:
+        #     ns = SubjectClusters(name=name)
+        #     ns.save()
+        #     rv = {
+        #         'message': f'successfully created subject cluster',
+        #         'id': ns.id,
+        #         'name': ns.name
+        #     }
+        # except Exception as e:
+        #     rv = {'message': e}
+        # return response_checker(True, rv, err_msg=rv['message'], err_num=500)
 
 
 class GetSubjectEquivalent(Resource):

@@ -31,3 +31,12 @@ class SavableModel:
             return self
         except exc.IntegrityError:
             return None
+
+    @staticmethod
+    def force_commit():
+        from sqlalchemy import exc
+        try:
+            db_session.commit()
+            return True
+        except exc.IntegrityError:
+            return None

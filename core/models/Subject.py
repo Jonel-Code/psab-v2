@@ -279,9 +279,101 @@ class SubjectClusters(Base, SavableModel):
             return []
         return [x.subject_code for x in s]
 
+    @property
+    def get_all_subject_codes(self) -> [str]:
+        return [x.subject_code for x in SubjectEquivalents.query.filter_by(cluster_id=self.id).all()]
+
+    @staticmethod
+    def get_all_in_json():
+        all_clusters = SubjectClusters.query.filter_by().all()
+        return [
+            {
+                'name': x.name,
+                'subjects': x.get_all_subject_codes
+            } for x in all_clusters
+        ]
+
     @staticmethod
     def search_cluster_name(n: str):
         return SubjectClusters.query.filter_by(name=n.lower()).first()
+
+    @staticmethod
+    def convert_item_from(subject_code: str, curriculum_codes: [str]) -> str or None:
+        checker = SubjectClusters.check_if_item_exist(subject_code)
+        if checker is False:
+            return None
+        cluster: SubjectClusters = SubjectClusters.query.filter_by(id=checker).first()
+        for entry in cluster.get_all_subject_codes:
+            if subject_code == entry:
+                continue
+            if entry in curriculum_codes:
+                return entry
+        return None
+
+    @staticmethod
+    def check_if_item_exist(subject_code: str) -> int or bool:
+        item: SubjectEquivalents = SubjectEquivalents.query.filter_by(subject_code=subject_code.lower()).first()
+        if item is not None:
+            return item.cluster_id
+        else:
+            return False
+
+    @staticmethod
+    def new_subject_cluster_from_list(subjects_codes: [str]):
+        # print('subjects_codes', subjects_codes)
+        import uuid
+        existing_cluster: SubjectClusters = None
+        modified_clusters_id: [int] = []
+        cluster_name = ''
+        for entry in subjects_codes:
+            e: SubjectEquivalents = SubjectEquivalents.query.filter_by(subject_code=entry).first()
+            # check = SubjectClusters.check_if_item_exist(entry)
+            # print('e',e)
+            if e is not None and e.cluster_id not in modified_clusters_id:
+                modified_clusters_id.append(e.cluster_id)
+                # existing_cluster =
+                # cluster_name = existing_cluster.name
+                # break
+        # print('modified_clusters_id', modified_clusters_id)
+        cluster: SubjectClusters = None
+        if existing_cluster is None or existing_cluster is False:
+            cluster_name = str(uuid.uuid4())
+            cluster = SubjectClusters(cluster_name)
+            cluster.save()
+        # print('cluster', cluster.id)
+        cluster_to_use: SubjectClusters = cluster
+        # print('cluster_to_use', cluster_to_use.id)
+        to_save: [SubjectEquivalents] = []
+        for code in subjects_codes:
+            # print('to_save', [x.id for x in to_save])
+            exist: SubjectEquivalents = SubjectEquivalents.query.filter_by(subject_code=code.lower()).first()
+            # print('exist', exist)
+            if exist is None:
+                new_item = SubjectEquivalents(cluster_to_use, code.lower())
+                # print('new_item.id', new_item.cluster_id)
+                # print('new_item.code', new_item.subject_code)
+                new_item.save(do_commit=False)
+                # print('new_item', new_item)
+                # to_save.append(new_item)
+                continue
+            exist.cluster_id = cluster_to_use.id
+            exist.save(do_commit=False)
+            # to_save.append(exist)
+        # for entry in to_save:
+        #     entry.save()
+        SubjectClusters.force_commit()
+        # print('modified_clusters_id',modified_clusters_id)
+        # do clean up for empty clusters
+        for mod_id in modified_clusters_id:
+            itm: SubjectClusters = SubjectClusters.query.filter_by(id=mod_id).first()
+            # print('itm',itm)
+            # s_codes = itm.get_all_subject_codes
+            # print(s_codes)
+            if len(itm.get_all_subject_codes) == 0:
+                SubjectClusters.query.filter_by(id=itm.id).delete()
+        SubjectClusters.force_commit()
+
+        return cluster_to_use, to_save
 
 
 class SubjectEquivalents(Base, SavableModel):
@@ -294,7 +386,7 @@ class SubjectEquivalents(Base, SavableModel):
 
     def __init__(self, cluster: SubjectClusters, subject_code: str):
         self.cluster_id = cluster.id
-        self.subject_id = subject_code
+        self.subject_code = subject_code
 
     @property
     def subject_cluster(self):
