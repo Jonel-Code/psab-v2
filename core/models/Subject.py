@@ -281,7 +281,10 @@ class SubjectClusters(Base, SavableModel):
 
     @property
     def get_all_subject_codes(self) -> [str]:
-        return [x.subject_code for x in SubjectEquivalents.query.filter_by(cluster_id=self.id).all()]
+        se: [SubjectEquivalents] = SubjectEquivalents.query.filter_by(cluster_id=self.id).all()
+        if len(se) > 0:
+            return [x.subject_code for x in se]
+        return []
 
     @staticmethod
     def get_all_in_json():
@@ -362,16 +365,30 @@ class SubjectClusters(Base, SavableModel):
         # for entry in to_save:
         #     entry.save()
         SubjectClusters.force_commit()
-        # print('modified_clusters_id',modified_clusters_id)
+        print('modified_clusters_id', modified_clusters_id)
         # do clean up for empty clusters
-        for mod_id in modified_clusters_id:
-            itm: SubjectClusters = SubjectClusters.query.filter_by(id=mod_id).first()
-            # print('itm',itm)
-            # s_codes = itm.get_all_subject_codes
-            # print(s_codes)
-            if len(itm.get_all_subject_codes) == 0:
-                SubjectClusters.query.filter_by(id=itm.id).delete()
+        cls_id = [x.id for x in SubjectClusters.query.all()]
+        print('cls_ud', cls_id)
+        equivs = SubjectEquivalents.query.all()
+        equivs_cls_ids = []
+        for x in equivs:
+            if x.cluster_id not in equivs_cls_ids:
+                equivs_cls_ids.append(x.cluster_id)
+
+        for cl in cls_id:
+            if cl not in equivs_cls_ids:
+                SubjectClusters.query.filter_by(id=cl).delete()
         SubjectClusters.force_commit()
+
+        # for mod_id in modified_clusters_id:
+        #     itm: SubjectClusters = SubjectClusters.query.filter_by(id=mod_id).first()
+        #     # print('itm',itm)
+        #     # s_codes = itm.get_all_subject_codes
+        #     # print(s_codes)
+        #     if len(itm.get_all_subject_codes) == 0:
+        #         print('deleting itm.id', itm.id)
+        #         SubjectClusters.query.filter_by(id=mod_id).delete()
+        # SubjectClusters.force_commit()
 
         return cluster_to_use, to_save
 
